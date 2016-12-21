@@ -154,4 +154,14 @@ Weeks 6- 7: Social media sharing, refining UI and the views, RESTful API. Testin
 
 
 ### Testing
+
+Automated test cases will be provided for the most critical functionality. Rest will be tested manually
+at the same pace as new functionality is added. Testing the user authentication verification and
+security will be a high priority for us.
+
 ### Risk Analysis
+
+The team members are well committed to the project and should have all the resources to execute
+the project as planned. Time management and communication can be challenges for our project,
+but the use of Trello for task management and having regular meetings should improve accountablity and
+communication.
