@@ -79,14 +79,26 @@ pop-up view where the developer can add a new game to the service and when the d
 has chosen the game, he will see a view where he can edit all the information of the game as
 well as delete the game.
 
-
-<<<<EXPLAIN ABOUT LOGIN & REGISTER UI??>>>>
-
+Users will have to register to the site to access all of its functionality. The registration will
+will be implemented as a separate form where the user can fill their personal information. If the
+user isn't currently logged in, there will be a link to the login and registration pages on every
+page. During registration, the user can choose if they want to create a developer or a player
+account. The login page will be the same for both user types. We will also provide the ability to
+log in with a Facebook account. Only registered users can buy games. If the user isn't logged in,
+instead of a buy button, there will be a suggestion to log in or register.
 
 When the user chooses to buy game and clicks buy, the application will open a small window
 asking users confirmation of the purchase. If user accepts, game will be purchased and added
 to user’s inventory and the pop-up window will be closed. The game is now available for player
 to play but in case of declining the purchase, pop-up will just be closed. 
+
+#### Authentication
+
+To authenticate to the site, the user will have to have a valid username and password combination
+and to also have validated their email address with a automated message. Alternatively, they can
+use a Facebook account to log in. Django auth will be used for user management and authentication.
+To securely transport personal information and passwords, HTTPS will be used as the protocol for
+communication. 
 
 #### Player’s functionalities:
 
