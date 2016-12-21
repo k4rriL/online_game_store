@@ -40,7 +40,7 @@ In the Game relation we have the unique game ID as key and several self-explanat
 Category field can be one of several pre-determined categories for games. DeveloperEmail is
 the email of the developer of the game.
 
-![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/blob/master/img/ER-onlinegamestore.png)
+![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/raw/master/img/ER-onlinegamestore.png)
 
 GamesOfPlayer relation contains information about player’s owned games. Keys from Game
 and Player relations will be the key of this relation together. The relation also contains
@@ -50,9 +50,9 @@ With this data structure we can enable Developers to buy and play games too.
 
 #### User Interface:
 
-![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/blob/master/img/ui%201.png)
-![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/blob/master/img/ui_2.png)
-![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/blob/master/img/ui_3.png)
+![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/raw/master/img/ui%201.png)
+![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/raw/master/img/ui_2.png)
+![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/raw/master/img/ui_3.png)
 The user interface as seen above consists of one simple menu with these options: Store and
 Categories (drop down menu) and depending on the state of the session: Log in, Log out,
 Register, My games, Manage Games. In addition, there is a search bar where the user can filter
