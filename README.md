@@ -132,6 +132,10 @@ example to modify someone else’s game.
 To implement this extra feature we will be using Django Rest framework. Our goal is to offer an 
 API where high scores and available games can be fetched and we even offer sale numbers for authenticated developers. 
 
+#### Social media sharing:
+
+We will enable the users to share their games on Facebook. For this we will use the Facebook API.
+
 
 ### Process and Time Schedule
 #### Communication:
