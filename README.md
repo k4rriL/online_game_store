@@ -40,6 +40,7 @@ In the Game relation we have the unique game ID as key and several self-explanat
 Category field can be one of several pre-determined categories for games. DeveloperEmail is
 the email of the developer of the game.
 
+![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/raw/master/img/ER-onlinegamestore.png)
 
 GamesOfPlayer relation contains information about player’s owned games. Keys from Game
 and Player relations will be the key of this relation together. The relation also contains
@@ -49,6 +50,9 @@ With this data structure we can enable Developers to buy and play games too.
 
 #### User Interface:
 
+![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/raw/master/img/ui%201.png)
+![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/raw/master/img/ui_2.png)
+![alt text](https://git.niksula.hut.fi/lehtinj14/online-game-store/raw/master/img/ui_3.png)
 The user interface as seen above consists of one simple menu with these options: Store and
 Categories (drop down menu) and depending on the state of the session: Log in, Log out,
 Register, My games, Manage Games. In addition, there is a search bar where the user can filter
@@ -75,14 +79,26 @@ pop-up view where the developer can add a new game to the service and when the d
 has chosen the game, he will see a view where he can edit all the information of the game as
 well as delete the game.
 
-
-<<<<EXPLAIN ABOUT LOGIN & REGISTER UI??>>>>
-
+Users will have to register to the site to access all of its functionality. The registration will
+will be implemented as a separate form where the user can fill their personal information. If the
+user isn't currently logged in, there will be a link to the login and registration pages on every
+page. During registration, the user can choose if they want to create a developer or a player
+account. The login page will be the same for both user types. We will also provide the ability to
+log in with a Facebook account. Only registered users can buy games. If the user isn't logged in,
+instead of a buy button, there will be a suggestion to log in or register.
 
 When the user chooses to buy game and clicks buy, the application will open a small window
 asking users confirmation of the purchase. If user accepts, game will be purchased and added
 to user’s inventory and the pop-up window will be closed. The game is now available for player
 to play but in case of declining the purchase, pop-up will just be closed. 
+
+#### Authentication
+
+To authenticate to the site, the user will have to have a valid username and password combination
+and to also have validated their email address with a automated message. Alternatively, they can
+use a Facebook account to log in. Django auth will be used for user management and authentication.
+To securely transport personal information and passwords, HTTPS will be used as the protocol for
+communication. 
 
 #### Player’s functionalities:
 
@@ -116,6 +132,10 @@ example to modify someone else’s game.
 To implement this extra feature we will be using Django Rest framework. Our goal is to offer an 
 API where high scores and available games can be fetched and we even offer sale numbers for authenticated developers. 
 
+#### Social media sharing:
+
+We will enable the users to share their games on Facebook. For this we will use the Facebook API.
+
 
 ### Process and Time Schedule
 #### Communication:
@@ -138,4 +158,14 @@ Weeks 6- 7: Social media sharing, refining UI and the views, RESTful API. Testin
 
 
 ### Testing
+
+Automated test cases will be provided for the most critical functionality. Rest will be tested manually
+at the same pace as new functionality is added. Testing the user authentication verification and
+security will be a high priority for us.
+
 ### Risk Analysis
+
+The team members are well committed to the project and should have all the resources to execute
+the project as planned. Time management and communication can be challenges for our project,
+but the use of Trello for task management and having regular meetings should improve accountablity and
+communication.
