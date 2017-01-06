@@ -10,7 +10,7 @@ class Game(models.Model):
     description = models.TextField()
     price = models.FloatField()
     purchaseCount = models.PositiveIntegerField()
-    developerEmail = models.ForeignKey('Developer', related_name='games')
+    developer = models.ForeignKey('Developer', related_name='games')
 
     CATEGORIES = (
         ('SPO', 'Sports'),

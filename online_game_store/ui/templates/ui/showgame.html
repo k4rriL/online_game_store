@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Online Game Store{% endblock %}
+
+{% block header %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+<script type="text/javascript" src="{% static 'games.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="jumbotron">
+    <div class="row">
+      <div class="col-sm-8">
+        <h1>{{ game.name }}</h1>
+        <div>
+          <p>{{ game.description }}</p>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <img src="{% static 'dog.jpg' %}" class="img-rounded" alt="Cinque Terre" width="304" height="236">
+      </div>
+      <div class="row">
+        <div class="col-sm-6">{{ game.price }}€</div>
+        <div class="col-sm-6">
+          <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
+            <input type="hidden" name="pid" value= "{{ pid }}" />
+            <input type="hidden" name="sid" value= "{{ sid }}" />
+            <input type="hidden" name="success_url" value="http://localhost:8000/games/success" />
+            <input type="hidden" name="cancel_url" value="http://localhost:8000/games/" />
+            <input type="hidden" name="error_url" value="http://localhost:8000/" />
+            <input type="hidden" name="checksum" value= "{{ checksum }}" />
+            <input type="hidden" name="amount" value= "{{ game.price }}"/>
+            <input type="submit" value="Purchase"/>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}

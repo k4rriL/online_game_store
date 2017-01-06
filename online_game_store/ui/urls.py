@@ -19,5 +19,7 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
+    url(r"^games/success", views.game_purchase_success, name="success"),
+    url(r"^games/", views.game_info, name='game'),
     url(r"^$", views.front, name='home'),
 ]
