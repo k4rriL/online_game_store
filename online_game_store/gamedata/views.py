@@ -30,7 +30,7 @@ def games_json(request, page = 1):
         c["description"] = i.description
         c["id"] = i.id
         c["purchaseCount"] = i.purchaseCount
-        c["developerEmail"] = i.developerEmail
+        c["developer"] = i.developer
         games.append(c)
     games.append({"page":page, "limit":limit, "offset":offset})
     data = json.dumps(games)
