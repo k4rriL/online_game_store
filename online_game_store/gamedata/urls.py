@@ -16,6 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from . import views
+
 urlpatterns = [
-    
+    url(r"^games/$", views.games_json, {'page': 1}, name='games'),
+    url(r"^games/(?P<page>\w+)$", views.games_json, name='games'),
 ]
