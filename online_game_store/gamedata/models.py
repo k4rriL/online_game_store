@@ -10,7 +10,7 @@ class Game(models.Model):
     description = models.TextField()
     price = models.FloatField()
     purchaseCount = models.PositiveIntegerField()
-    developerEmail = models.ForeignKey('Developer', related_name='games')
+    developer = models.ForeignKey('Developer', related_name='games')
 
     CATEGORIES = (
         ('SPO', 'Sports'),
@@ -34,7 +34,7 @@ class Developer(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
 
 class GamesOfPlayer(models.Model):
-    gameID = models.ForeignKey('Game')
-    username = models.ForeignKey('Player', related_name = 'games')
+    game = models.ForeignKey('Game')
+    user = models.ForeignKey('Player', related_name = 'games')
     highscore = models.PositiveIntegerField()
     gameState = models.TextField()
