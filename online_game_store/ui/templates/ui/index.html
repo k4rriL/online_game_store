@@ -6,14 +6,9 @@
 {% block header %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-<script type="text/javascript" src="{% static 'games.js' %}"></script>
+<script type="text/javascript" src="{% static 'ajax.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-<div>
-  <h1>Games</h1>
-  <div id="games">
-  </div>
-  <ul class="pagination pagination--inactive" id="pagination"</ul>
-</div>
+{% include "ui/gameview.html" %}
 {% endblock %}

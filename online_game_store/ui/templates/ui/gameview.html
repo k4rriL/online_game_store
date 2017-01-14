@@ -1,0 +1,49 @@
+{% load staticfiles %}
+<div id="gamesDiv"></div>
+
+<script>
+var articleOffset = 0;
+
+var articleLoader = function() {
+    $.ajax({
+        url: '/api/games/?offset=' + articleOffset,
+        success: function(data) {
+            if (data.length > 0) {
+                for (var i = 0, total = data.length; i < total; i++) {
+                  console.log(data[i].name)
+                  var description = data[i].description
+                  if (description.length > 100){
+                    description = description.substr(0,98)+'..';
+                  }
+                    var compile_data;
+                    compile_data ='<div class="col-md-3 col-sm-4 col-xs-5"> <div class="card">' +
+                    '<div class="card-image"> <img class="img-responsive" src="{% static 'test.png' %}">' +
+                                '<span class="card-title">' + data[i].name + '</span></div>' +
+                                  '<div class="card-content"><p>'+  description + '</p>' +
+                            '</div> <div class="category_price"><div class="col-md-3" id="game_category">'+data[i].category + '</div><div class="col-md-3" id="game_price">'+ data[i].price +'€</div></div></div></div>';
+                    $('#gamesDiv').append(compile_data);
+                }
+
+                /* update the offset */
+                articleOffset += 20
+            } else {
+                $('#gamesDiv').append('No articles found');
+            }
+        }
+    });
+}
+
+/* Infinite scrolling for fetching articles */
+var $window = $(window);
+function prodScrollPosition() {
+    var distance = $window.scrollTop() + $window.height();
+    if ($('body').height() <= distance && $('#gamesDiv')) {
+        articleLoader();
+    }
+}
+
+$window.scroll(prodScrollPosition).scroll();
+
+/* Manually initiate the first ajax request */
+articleLoader();
+</script>
