@@ -12,11 +12,12 @@ var articleLoader = function() {
                 for (var i = 0, total = data.length; i < total; i++) {
                   console.log(data[i].name)
                   var description = data[i].description
-                  if (description.length > 100){
-                    description = description.substr(0,98)+'..';
+                  if (description.length > 50){
+                    description = description.substr(0,48)+'..';
                   }
                     var compile_data;
-                    compile_data ='<div class="col-md-3 col-sm-4 col-xs-5"> <div class="card">' +
+                    compile_data ='<div class="col-md-3 col-sm-4 col-xs-5"> <div class="card"> ' +
+                    '<a href="game/' + data[i].id + '"><span class=card-link></span></a>' +
                     '<div class="card-image"> <img class="img-responsive" src="{% static 'test.png' %}">' +
                                 '<span class="card-title">' + data[i].name + '</span></div>' +
                                   '<div class="card-content"><p>'+  description + '</p>' +

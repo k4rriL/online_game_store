@@ -9,10 +9,10 @@ def front(request):
     context = {}
     return render(request, "ui/index.html", context)
 
-def game_info(request):
+def game_info(request, gameId):
     context = {}
     #Test game
-    game = get_object_or_404(Game, id=1234)
+    game = get_object_or_404(Game, id=gameId)
     context["game"] = game
     #Test user
     test_user = get_object_or_404(User, username="My Testuser")

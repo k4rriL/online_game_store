@@ -47,7 +47,8 @@ body {
   padding: 16px;
 }
 .card .card-content {
-  padding: 16px;
+  padding-left:16px;
+  padding-right: 16px;
   border-radius: 0 0 2px 2px;
   background-clip: padding-box;
   box-sizing: border-box;
@@ -64,19 +65,35 @@ body {
   box-sizing: border-box;
   position: absolute;
   bottom: 5px;
+  border-radius: 0 0 2px 2px;
+  background-clip: padding-box;
 }
 
 #game_category {
   float: left;
   font-size: x-large;
-  color: #6b6161
+  color: #6b6161;
+  padding-left: 16px;
+  padding-right: 16px;
 
 }
 
 #game_price {
   float: right;
   font-size: x-large;
-  padding-right: 10px;
+}
+
+.card-link {
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left: 0;
+
+  z-index: 1;
+  /* fixes overlap error in IE7/8,
+     make sure you have an empty gif */
+  background-image: url('empty.gif');
 }
 
 
@@ -106,103 +123,8 @@ a:active {
 	color: darken($color, 30%);
 }
 
-
 main {
 	margin: 0 auto;
 	max-width: 30em;
 	padding: 1em;
-}
-
-.game-list__page {
-	border-top: 1px solid #ddd;
-	clear: both;
-	counter-increment: page;
-	padding-bottom: 3em;
-	position: relative;
-}
-
-.game-list__page:before {
-	background-color: #ddd;
-	display: inline-block;
-	content: counter(page);
-	color: #888;
-	padding: .25em .5em;
-	position: absolute;
-	left: calc(50% - .75em);
-	top: -.75em;
-	vertical-align: middle;
-	z-index: 1;
-}
-
-.game-list__item {
-	background-color: #eee;
-	float: left;
-	height: 15em;
-	max-width: 50%;
-	opacity: .75;
-	transform: scale(.8);
-	transition: opacity .2s, transform .2s;
-	width: 15em;
-}
-
-.game-list__item:hover {
-		opacity: 1;
-		transform: scale(.85);
-}
-
-
-.game-list__item__image {
-	display: block;
-	height: auto;
-	margin: 0;
-	opacity: 1;
-	transition: opacity .2s;
-	width: 100%;
-}
-
-.game-list__item__image--loading {
-	opacity: 0;
-}
-
-.list__pagination {
-	background-color: #222;
-	box-shadow: 0 0 1em rgba(#000, .25);
-	display: block;
-	bottom: 0;
-	left: 0;
-	list-style-type: none;
-	margin: 0;
-	padding: .5em;
-	position: fixed;
-	right: 0;
-	text-align: center;
-	transform: translateY(0);
-	transition: transform .2s;
-	z-index: 2;
-}
-
-.pagination--inactive {
-	transform: translateY(100%);
-}
-
-.game-list__pagination__item {
-	display: inline-block;
-	margin: 0 1em;
-
-	a {
-		$color: #888;
-		color: $color;
-		text-decoration: none;
-  }
-		a:hover, a:focus {
-			color: lighten($color, 15%);
-		}
-		a:active {
-			color: lighten($color, 30%);
-		}
-
-}
-
-#list h1 {
-  text-align: center;
 }
