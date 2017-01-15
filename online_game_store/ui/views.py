@@ -9,6 +9,11 @@ def front(request):
     context = {}
     return render(request, "ui/index.html", context)
 
+
+def category(request, category):
+    context = {"category":category}
+    return render(request, "ui/index.html", context)
+
 def game_info(request, gameId):
     context = {}
     #Test game

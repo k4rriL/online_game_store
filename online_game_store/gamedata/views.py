@@ -14,7 +14,8 @@ def games_json(request, page = 1):
         if categoryRequested is None and search is None:
             p = Game.objects.all()[offset:end]
         elif categoryRequested is not None and search is None:
-            p = Game.objects.filter(category = categoryRequested)[offset:end]
+            print(categoryRequested);
+            p = Game.objects.filter(category__exact = categoryRequested)[offset:end]
         elif categoryRequested is None and search is not None:
             p = Game.objects.filter(name__contains = search)[offset:end]
         else:
@@ -32,8 +33,8 @@ def games_json(request, page = 1):
         c["purchaseCount"] = i.purchaseCount
         c["developer"] = i.developer.user.email
         games.append(c)
-    games.append({"page":page, "limit":end, "offset":offset})
     data = json.dumps(games)
+
     if request.GET.get("callback") != None:
         data = '%s(%s);' % (request.GET.get("callback"),data)
         return HttpResponse(data, content_type="text/javascript")
