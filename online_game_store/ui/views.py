@@ -49,7 +49,7 @@ def game_purchase_success(request):
     checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
     correct_checksum = calculateHash(checksumstr)
     if request.GET["result"] == "success" and correct_checksum == checksum:
-        new_relation = GamesOfPlayer.objects.create(gameID=game, username=player, highscore=0, gameState="Ready")
+        new_relation = GamesOfPlayer.objects.create(game=game, user=player, highscore=0, gameState="Ready")
         new_relation.save()
 
     #TODO update this to redirect to game
