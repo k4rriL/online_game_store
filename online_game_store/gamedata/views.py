@@ -7,18 +7,19 @@ from .models import Game
 def games_json(request, page = 1):
     categoryRequested = request.GET.get("category")
     search = request.GET.get("q")
-    gamesPerPage = 20
-    limit = int(page) * gamesPerPage
-    offset = limit - gamesPerPage
+    gamesPerPage= 10
+    offset = int(request.GET.get('offset', 0))
+    end = offset + gamesPerPage
     try:
         if categoryRequested is None and search is None:
-            p = Game.objects.all()[offset:limit]
+            p = Game.objects.all()[offset:end]
         elif categoryRequested is not None and search is None:
-            p = Game.objects.filter(category = categoryRequested)[offset:limit]
+            print(categoryRequested);
+            p = Game.objects.filter(category__exact = categoryRequested)[offset:end]
         elif categoryRequested is None and search is not None:
-            p = Game.objects.filter(name__contains = search)[offset:limit]
+            p = Game.objects.filter(name__contains = search)[offset:end]
         else:
-            p = Game.objects.filter(name__contains = search).filter(category__exact = categoryRequested)[offset:limit]
+            p = Game.objects.filter(name__contains = search).filter(category__exact = categoryRequested)[offset:end]
     except Game.DoesNotExist:
         raise Http404("No games found")
     games = []
@@ -30,10 +31,10 @@ def games_json(request, page = 1):
         c["description"] = i.description
         c["id"] = i.id
         c["purchaseCount"] = i.purchaseCount
-        c["developer"] = i.developer
+        c["developer"] = i.developer.user.email
         games.append(c)
-    games.append({"page":page, "limit":limit, "offset":offset})
     data = json.dumps(games)
+
     if request.GET.get("callback") != None:
         data = '%s(%s);' % (request.GET.get("callback"),data)
         return HttpResponse(data, content_type="text/javascript")

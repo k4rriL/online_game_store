@@ -26,29 +26,29 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#">Game Store</a>
+              <a class="navbar-brand">Game Store</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Store</a></li>
+                <li class="active"><a href="/">Store</a></li>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Categories <span class="caret"></span></a>
+                  <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Categories <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Adventure</a></li>
-                    <li><a href="#">Casual</a></li>
-                    <li><a href="#">Racing</a></li>
-                    <li><a href="#">RPG</a></li>
-                    <li><a href="#">Sports</a></li>
-                    <li><a href="#">Strategy</a></li>
-                    <li><a href="#">Other</a></li>
+                    <li><a class="category" href="/category/ACT">Action</a></li>
+                    <li><a class="category" href="/category/ADV">Adventure</a></li>
+                    <li><a class="category" href="/category/CAS">Casual</a></li>
+                    <li><a class="category" href="/category/RAC">Racing</a></li>
+                    <li><a class="category" href="/category/RPG">RPG</a></li>
+                    <li><a class="category" href="/category/SPO">Sports</a></li>
+                    <li><a class="category" href="/category/STR">Strategy</a></li>
+                    <li><a class="category" href="/category/OTH">Other</a></li>
                   </ul>
                 </li>
 
               </ul>
-              <form class="navbar-form navbar-left">
+              <form id="search" class="navbar-form navbar-left">
                 <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Search for a game">
+                  <input type="text" name="query" id="query" class="form-control" placeholder="Search for a game">
                 </div>
                 <button type="submit" class="btn btn-default">Search</button>
               </form>
@@ -74,7 +74,7 @@
       {% endblock %}
 
       {% block content %}
-      
+
       {% endblock %}
     </div>
   </body>
