@@ -11,14 +11,18 @@ var articleLoader = function(url) {
             if (data.length > 0) {
                 for (var i = 0, total = data.length; i < total; i++) {
                   var description = data[i].description
+                  var name = data[i].name
                   if (typeof description !== 'undefined' && description.length > 50){
                     description = description.substr(0, 48)+'..';
+                  }
+                  if (typeof name !== 'undefined' && name.length > 14){
+                    name = name.substr(0, 13)+'..';
                   }
                     var compile_data;
                     compile_data ='<div class="col-md-3 col-sm-4 col-xs-6 card-container"> <div class="card"> ' +
                     '<a href="/game/' + data[i].id + '"><span class=card-link></span></a>' +
                     '<div class="card-image"> <img class="img-responsive" src="{% static 'test.png'%}">' +
-                                '<span class="card-title">' + data[i].name + '</span></div>' +
+                                '<span class="card-title">' + name + '</span></div>' +
                                   '<div class="card-content"><p>'+  description + '</p>' +
                             '</div><div class="game_category">'+data[i].category + '</div><div class="game_price">'+ data[i].price +'€</div></div></div></div>';
                     $('#gamesDiv').append(compile_data);
@@ -99,4 +103,5 @@ $(function() {
     });
 
 });
+
 </script>

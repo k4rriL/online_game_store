@@ -14,7 +14,6 @@ def games_json(request, page = 1):
         if categoryRequested is None and search is None:
             p = Game.objects.all()[offset:end]
         elif categoryRequested is not None and search is None:
-            print(categoryRequested);
             p = Game.objects.filter(category__exact = categoryRequested)[offset:end]
         elif categoryRequested is None and search is not None:
             p = Game.objects.filter(name__contains = search)[offset:end]
