@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Game(models.Model):
-    id = models.PositiveIntegerField(unique = True, primary_key = True)
     name = models.CharField(max_length = 100, unique = True)
     address = models.URLField()
     description = models.TextField()

@@ -7,7 +7,7 @@ from .models import Game
 def games_json(request, page = 1):
     categoryRequested = request.GET.get("category")
     search = request.GET.get("q")
-    gamesPerPage= 10
+    gamesPerPage= 20
     offset = int(request.GET.get('offset', 0))
     end = offset + gamesPerPage
     try:
@@ -32,6 +32,7 @@ def games_json(request, page = 1):
         c["id"] = i.id
         c["purchaseCount"] = i.purchaseCount
         c["developer"] = i.developer.user.email
+        c["category"] = i.category
         games.append(c)
     data = json.dumps(games)
 

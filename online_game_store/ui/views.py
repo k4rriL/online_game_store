@@ -1,7 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from gamedata.models import Game, Player, GamesOfPlayer
+from gamedata.models import Game, Player, GamesOfPlayer, Developer
 from django.contrib.auth.models import User
 from hashlib import md5
+from django.http import HttpResponseRedirect
+from random import randint
+import time
+from . import forms
 
 # Create your views here.
 
@@ -53,11 +57,11 @@ def game_purchase_success(request):
     checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
     correct_checksum = calculateHash(checksumstr)
     if request.GET["result"] == "success" and correct_checksum == checksum:
-        new_relation = GamesOfPlayer.objects.create(gameID=game, username=player, highscore=0, gameState="Ready")
+        new_relation = GamesOfPlayer.objects.create(game=game, user=player, highscore=0, gameState="Ready")
         new_relation.save()
 
     #TODO update this to redirect to game
-    return front(request)
+    return HttpResponseRedirect("/")
 
 def add_new_game(request):
 
@@ -76,17 +80,11 @@ def add_new_game(request):
             url = request.POST["url"]
             description = request.POST["description"]
             price = float(request.POST["price"])
-            id = int(time.time())
+            category = request.POST["category"]
 
             #Check that there are no games with same id and name
-            if Game.objects.filter(name=name).count() == 0 and  Game.objects.filter(id=id).count() == 0:
-                new_game = Game.objects.create(id=id, name=name, address=url, description=description, price=price, purchaseCount=0, developer=developer)
-                new_game.save()
-
-            #Check that atleast the name is unique
-            elif Game.objects.filter(name=name).count() == 0:
-                id = int(str(randint(0, 10000)) + str(id))
-                new_game = Game.objects.create(id=id, name=name, address=url, description=description, price=price, purchaseCount=0, developer=developer)
+            if Game.objects.filter(name=name).count() == 0:
+                new_game = Game.objects.create(name=name, address=url, description=description, price=price, purchaseCount=0, developer=developer, category=category)
                 new_game.save()
 
             #Else return to the form filled with old parameters
@@ -98,13 +96,16 @@ def add_new_game(request):
                 context["name_error"] = "Sorry, this name is already in use"
                 return render(request, "ui/addgame.html", context)
 
+        else:
+            print("failed to validate")
+
     #if the request method wasn't post, return the form view
     else:
         return render(request, "ui/addgame.html", context)
 
     #TODO maybe return the page of developer's games
     #now also including the newly added game?
-    return render(request, "ui/index.html", context)
+    return HttpResponseRedirect("/")
 
 def calculateHash(str):
     m = md5()
