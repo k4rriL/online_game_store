@@ -20,9 +20,17 @@ def category(request, category):
 
 def game_info(request, gameId):
     context = {}
-    #Test game
     game = get_object_or_404(Game, id=gameId)
     context["game"] = game
+
+    boughtGames = GamesOfPlayer.objects.all()
+    highscores = []
+    for i in boughtGames:
+        c = {}
+        c["score"] = i.highscore
+        c["name"] = i.user.user.first_name
+        highscores.append(c)
+    context["highscores"] = highscores
     #Test user
     test_user = get_object_or_404(User, username="My Testuser")
     player = get_object_or_404(Player, user=test_user)
