@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from hashlib import md5
 from django.http import HttpResponseRedirect
 from random import randint
+from django.db.models import F
 import time
 from . import forms
 
@@ -67,9 +68,10 @@ def game_purchase_success(request):
     if request.GET["result"] == "success" and correct_checksum == checksum:
         new_relation = GamesOfPlayer.objects.create(game=game, user=player, highscore=0, gameState="Ready")
         new_relation.save()
+        Game.objects.filter(id=game_id).update(purchaseCount=F("purchaseCount") + 1)
 
     #TODO update this to redirect to game
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/game/"+ game_id)
 
 def add_new_game(request):
 

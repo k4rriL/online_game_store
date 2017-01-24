@@ -24,7 +24,7 @@ class Game(models.Model):
 
     category = models.CharField(max_length = 3, choices = CATEGORIES)
     class Meta:
-        ordering = ("purchaseCount",)
+        ordering = ("-purchaseCount",)
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)

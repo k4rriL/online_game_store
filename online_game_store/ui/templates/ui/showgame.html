@@ -17,7 +17,10 @@
       <h1 class="game-title">{{ game.name }}</h1>
     </div>
     <div class="row">
-
+      {% if game in player.games %}
+        <h1>TEST</h1>
+      {% else %}
+      {{player.games}}{{game}}
       <div class="col-md-4 col-sm-6 col-xs-8">
         <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
       </div>
@@ -39,6 +42,7 @@
         <p class="game-description">{{ game.description }}</p>
 
       </div>
+      {% endif %}
       <div class="col-md-3 col-sm-6 col-xs-8">
         <h1>Highscores</h1>
         <table class="highscores-table">
