@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block content %}
+{% static "" as baseUrl %}
 
   <div id="gamesDiv" class=" game-info">
     <div class="row title-div">
@@ -18,7 +19,7 @@
     <div class="row">
 
       <div class="col-md-4 col-sm-6 col-xs-8">
-        <img src="{% static 'test.png' %}" class="img-responsive" alt="">
+        <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
       </div>
       <div class="col-md-4 col-sm-7 col-xs-9">
         <h2 class="game-price">{{ game.price }} EUR</h2>
@@ -33,7 +34,7 @@
           <input type="submit" value="Purchase" class="btn btn-success"/>
         </form>
         <h4 class="game-category">Category: {{ game.category }} </h4>
-        <h4 class="game-divider">About this game</h4>
+        <h4 class="game-divider">Game description</h4>
         <hr class="description-line"></hr>
         <p class="game-description">{{ game.description }}</p>
 

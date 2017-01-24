@@ -133,6 +133,10 @@ body {
   margin-left: 5px;
 }
 
+.game-info img{
+  margin: 10px;
+}
+
 .title-div{
   background-color: #484848;
   border-top-right-radius: 6px;
