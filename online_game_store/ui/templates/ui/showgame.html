@@ -12,15 +12,40 @@
 {% block content %}
 {% static "" as baseUrl %}
 
-  <div id="gamesDiv" class=" game-info">
+  <div id="gamesDiv" class="game-info">
     <div class="row title-div">
       <h1 class="game-title">{{ game.name }}</h1>
     </div>
+    {% if owned %}
     <div class="row">
-      {% if game in player.games %}
-        <h1>TEST</h1>
-      {% else %}
-      {{player.games}}{{game}}
+      <div class="col-md-8 col-sm-12 col-xs-16 game-iframe">
+        <iframe src="{{game.address}}"></iframe>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-8">
+        <h1>Highscores</h1>
+        <table class="highscores-table">
+          {% for i in highscores %}
+            <tr>
+              <td>{{i.name}}</td><td>{{i.score}}</td>
+            </tr>
+          {%endfor%}
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 col-sm-6 col-xs-8">
+        <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
+      </div>
+      <div class="col-md-4 col-sm-7 col-xs-9">
+        <h2 class="game-price">{{ game.price }} EUR</h2>
+        <h4 class="game-category">Category: {{ game.category }} </h4>
+        <h4 class="game-divider">Game description</h4>
+        <hr class="description-line"></hr>
+        <p class="game-description">{{ game.description }}</p>
+      </div>
+    </div>
+    {% else %}
+    <div class="row">
       <div class="col-md-4 col-sm-6 col-xs-8">
         <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
       </div>
@@ -42,7 +67,6 @@
         <p class="game-description">{{ game.description }}</p>
 
       </div>
-      {% endif %}
       <div class="col-md-3 col-sm-6 col-xs-8">
         <h1>Highscores</h1>
         <table class="highscores-table">
@@ -54,6 +78,7 @@
         </table>
       </div>
     </div>
+    {% endif %}
   </div>
 
 {% endblock %}

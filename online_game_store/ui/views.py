@@ -37,6 +37,13 @@ def game_info(request, gameId):
     player = get_object_or_404(Player, user=test_user)
     context["player"] = player
 
+    playersGames = GamesOfPlayer.objects.filter(user=player)
+    for i in playersGames:
+        if i.game.id == game.id:
+            owned = True
+        else:
+            owned = False
+    context["owned"] = owned
     pid = str(game.id) + player.user.username.replace(" ", "")
     sid = "OnlineGameStore"
     token = "5fa6f9b7ea1628e4d373b4003bce9eb5"
