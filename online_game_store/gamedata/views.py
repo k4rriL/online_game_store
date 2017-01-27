@@ -7,14 +7,13 @@ from .models import Game
 def games_json(request, page = 1):
     categoryRequested = request.GET.get("category")
     search = request.GET.get("q")
-    gamesPerPage= 10
+    gamesPerPage= 20
     offset = int(request.GET.get('offset', 0))
     end = offset + gamesPerPage
     try:
         if categoryRequested is None and search is None:
             p = Game.objects.all()[offset:end]
         elif categoryRequested is not None and search is None:
-            print(categoryRequested);
             p = Game.objects.filter(category__exact = categoryRequested)[offset:end]
         elif categoryRequested is None and search is not None:
             p = Game.objects.filter(name__contains = search)[offset:end]
@@ -32,6 +31,7 @@ def games_json(request, page = 1):
         c["id"] = i.id
         c["purchaseCount"] = i.purchaseCount
         c["developer"] = i.developer.user.email
+        c["category"] = i.category
         games.append(c)
     data = json.dumps(games)
 

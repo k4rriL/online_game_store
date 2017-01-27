@@ -10,35 +10,75 @@
 {% endblock %}
 
 {% block content %}
+{% static "" as baseUrl %}
 
-<div class="container">
-  <div class="jumbotron">
+  <div id="gamesDiv" class="game-info">
+    <div class="row title-div">
+      <h1 class="game-title">{{ game.name }}</h1>
+    </div>
+    {% if owned %}
     <div class="row">
-      <div class="col-sm-8">
-        <h1>{{ game.name }}</h1>
-        <div>
-          <p>{{ game.description }}</p>
-        </div>
+      <div class="col-md-8 col-sm-12 col-xs-16 game-iframe">
+        <iframe src="{{game.address}}"></iframe>
       </div>
-      <div class="col-sm-4">
-        <img src="{% static 'dog.jpg' %}" class="img-rounded" alt="Cinque Terre" width="304" height="236">
-      </div>
-      <div class="row">
-        <div class="col-sm-6">{{ game.price }}€</div>
-        <div class="col-sm-6">
-          <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
-            <input type="hidden" name="pid" value= "{{ pid }}" />
-            <input type="hidden" name="sid" value= "{{ sid }}" />
-            <input type="hidden" name="success_url" value="http://localhost:8000/games/success?id={{ game.id }}" />
-            <input type="hidden" name="cancel_url" value="http://localhost:8000/games/" />
-            <input type="hidden" name="error_url" value="http://localhost:8000/" />
-            <input type="hidden" name="checksum" value= "{{ checksum }}" />
-            <input type="hidden" name="amount" value= "{{ game.price }}"/>
-            <input type="submit" value="Purchase"/>
-          </form>
-        </div>
+      <div class="col-md-3 col-sm-6 col-xs-8">
+        <h1>Highscores</h1>
+        <table class="highscores-table">
+          {% for i in highscores %}
+            <tr>
+              <td>{{i.name}}</td><td>{{i.score}}</td>
+            </tr>
+          {%endfor%}
+        </table>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-4 col-sm-6 col-xs-8">
+        <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
+      </div>
+      <div class="col-md-4 col-sm-7 col-xs-9">
+        <h2 class="game-price">{{ game.price }} EUR</h2>
+        <h4 class="game-category">Category: {{ game.category }} </h4>
+        <h4 class="game-divider">Game description</h4>
+        <hr class="description-line"></hr>
+        <p class="game-description">{{ game.description }}</p>
+      </div>
+    </div>
+    {% else %}
+    <div class="row">
+      <div class="col-md-4 col-sm-6 col-xs-8">
+        <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
+      </div>
+      <div class="col-md-4 col-sm-7 col-xs-9">
+        <h2 class="game-price">{{ game.price }} EUR</h2>
+        <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST" class="game-purchase">
+          <input type="hidden" name="pid" value= "{{ pid }}" />
+          <input type="hidden" name="sid" value= "{{ sid }}" />
+          <input type="hidden" name="success_url" value="http://localhost:8000/games/success?id={{ game.id }}" />
+          <input type="hidden" name="cancel_url" value="http://localhost:8000/games/" />
+          <input type="hidden" name="error_url" value="http://localhost:8000/" />
+          <input type="hidden" name="checksum" value= "{{ checksum }}" />
+          <input type="hidden" name="amount" value= "{{ game.price }}"/>
+          <input type="submit" value="Purchase" class="btn btn-success"/>
+        </form>
+        <h4 class="game-category">Category: {{ game.category }} </h4>
+        <h4 class="game-divider">Game description</h4>
+        <hr class="description-line"></hr>
+        <p class="game-description">{{ game.description }}</p>
 
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-8">
+        <h1>Highscores</h1>
+        <table class="highscores-table">
+          {% for i in highscores %}
+            <tr>
+              <td>{{i.name}}</td><td>{{i.score}}</td>
+            </tr>
+          {%endfor%}
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </div>
 
 {% endblock %}

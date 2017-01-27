@@ -4,6 +4,8 @@
 var articleOffset = 0;
 var timeout = null;
 
+var timeout2 = null;
+
 var articleLoader = function(url) {
     $.ajax({
         url: url,
@@ -11,21 +13,26 @@ var articleLoader = function(url) {
             if (data.length > 0) {
                 for (var i = 0, total = data.length; i < total; i++) {
                   var description = data[i].description
-                  if (typeof description !== 'undefined' && description.length > 50){
-                    description = description.substr(0, 48)+'..';
+                  var name = data[i].name
+                  if (typeof description !== 'undefined' && description.length > 65){
+                    description = description.substr(0, 63)+'..';
                   }
+                  if (typeof name !== 'undefined' && name.length > 14){
+                    name = name.substr(0, 13)+'..';
+                  }
+                  {% static "" as baseUrl%}
                     var compile_data;
                     compile_data ='<div class="col-md-3 col-sm-4 col-xs-6 card-container"> <div class="card"> ' +
                     '<a href="/game/' + data[i].id + '"><span class=card-link></span></a>' +
-                    '<div class="card-image"> <img class="img-responsive" src="{% static 'test.png'%}">' +
-                                '<span class="card-title">' + data[i].name + '</span></div>' +
-                                  '<div class="card-content"><p>'+  description + '</p>' +
-                            '</div><div class="game_category">'+data[i].category + '</div><div class="game_price">'+ data[i].price +'€</div></div></div></div>';
+                    '<div class="card-image"> <img class="img-responsive" src="{{baseUrl}}'+ data[i].category + '.jpg">' +
+                                '<span class="game-title">' + name + '</span></div>' +
+                                  '<div class="game-description"><p>'+  description + '</p>' +
+                            '</div><div class="game-category">'+data[i].category + '</div><div class="game-price">'+data[i].price +'€</div></div></div></div>';
                     $('#gamesDiv').append(compile_data);
                 }
 
                 /* update the offset */
-                articleOffset += 20
+                articleOffset += data.length
             } else {
 							  if (articleOffset === 0){
 									$('#gamesDiv').append('No games found');
@@ -46,6 +53,10 @@ var category;
 /* Infinite scrolling for fetching articles */
 var $window = $(window);
 function prodScrollPosition() {
+  if (timeout2) {
+    clearTimeout(timeout2);
+  }
+  timeout2 = setTimeout(function() {
     var distance = $window.scrollTop() + $window.height();
     if ($('body').height() <= distance && $('#gamesDiv')) {
       if (category !== ""){
@@ -55,6 +66,7 @@ function prodScrollPosition() {
       }
 
     }
+  }, 50)
 }
 
 $window.scroll(prodScrollPosition).scroll();
@@ -99,4 +111,5 @@ $(function() {
     });
 
 });
+
 </script>
