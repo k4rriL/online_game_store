@@ -37,3 +37,4 @@ class GamesOfPlayer(models.Model):
     user = models.ForeignKey('Player', related_name = 'games')
     highscore = models.PositiveIntegerField()
     gameState = models.TextField()
+    purchaseTime = models.DateTimeField(auto_now_add=True)

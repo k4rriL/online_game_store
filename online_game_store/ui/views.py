@@ -38,11 +38,10 @@ def game_info(request, gameId):
     context["player"] = player
 
     playersGames = GamesOfPlayer.objects.filter(user=player)
+    owned = False
     for i in playersGames:
         if i.game.id == game.id:
             owned = True
-        else:
-            owned = False
     context["owned"] = owned
     pid = str(game.id) + player.user.username.replace(" ", "")
     sid = "OnlineGameStore"
@@ -79,6 +78,7 @@ def game_purchase_success(request):
 
     #TODO update this to redirect to game
     return HttpResponseRedirect("/game/"+ game_id)
+
 
 def add_new_game(request):
 
@@ -123,6 +123,54 @@ def add_new_game(request):
     #TODO maybe return the page of developer's games
     #now also including the newly added game?
     return HttpResponseRedirect("/")
+
+
+def modify(request, gameId):
+    context = {}
+    game = Game.objects.filter(id=gameId)
+    if game.count() > 0:
+        game = Game.objects.get(id=gameId)
+        games = GamesOfPlayer.objects.filter(game=game)
+        context["game"] =  game
+        context["games"] = games
+        return render(request, "ui/modifygame.html", context)
+
+    return HttpResponseRedirect("/")
+
+
+def modify_game(request):
+
+    if request.method == "POST":
+        gameId = request.POST["gameid"]
+        game = Game.objects.filter(id=gameId)
+        if game.count() > 0:
+            game = Game.objects.get(id=gameId)
+            description = request.POST["description"]
+            price = request.POST["price"]
+            name = request.POST["name"]
+            category = request.POST["category"]
+            address = request.POST["url"]
+            game.description = description
+            game.price = price
+            game.name = name
+            game.category = category
+            game.address = address
+            game.save(update_fields=["description", "price", "name", "category", "address"])
+
+    #TODO redirect to developer's games?
+    return HttpResponseRedirect("/")
+
+def delete_game(request):
+
+    if request.method == "POST":
+        gameId = request.POST["gameid"]
+        if Game.objects.filter(id=gameId).count() > 0:
+            game = Game.objects.get(id=gameId)
+            game.delete()
+
+    #TODO redirect to developer's games?
+    return HttpResponseRedirect("/")
+
 
 def calculateHash(str):
     m = md5()

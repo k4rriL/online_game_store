@@ -7,7 +7,6 @@ class NewGameForm(forms.Form):
     description = forms.CharField()
     price = forms.FloatField()
 
-
     CATEGORIES = (
         ('Sports', 'SPO'),
         ('Racing', 'RAC'),
