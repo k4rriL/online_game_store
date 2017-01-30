@@ -150,6 +150,12 @@ body {
   border-radius: 2px;
 }
 
+.form-horizontal {
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-top: 15px;
+}
+
 .title-div{
   background-color: #484848;
   border-top-right-radius: 6px;
@@ -166,6 +172,31 @@ body {
   /* fixes overlap error in IE7/8,
      make sure you have an empty gif */
   background-image: url('empty.gif');
+}
+
+.game-info .save-button{
+  float:left;
+}
+
+.game-info .delete-button{
+  float:left;
+  margin-left: 15px;
+}
+
+.purchases {
+  padding: 15px;
+}
+
+.td-left{
+  border-right: 1px solid #aaaaaa;
+}
+
+.tr-top{
+  border-bottom: 1px solid #aaaaaa;
+}
+
+.purchases-table td{
+  padding: 5px;
 }
 
 .navbar {

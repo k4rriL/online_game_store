@@ -6,14 +6,15 @@
 {% block header %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-<script type="text/javascript" src="{% static 'games.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 
-<div class="container">
-  <div class="jumbotron">
-    <h1>Add new game</h1>
+  <div id="gamesDiv" class="game-info">
+    <div class="row title-div">
+      <h1 class="game-title">Add new game</h1>
+    </div>
+    <div class ="row">
     <form action="/addnewgame/" method="POST" role="form" id="gameform" class="form-horizontal">{% csrf_token %}
       <div class="form-group">
         <label for="name"> Name of the game</label>
@@ -44,10 +45,8 @@
           <option>Other</option>
         </select>
       </div><br>
-      <input type="submit" id="submitgame" value="Add"/>
+      <input type="submit" id="submitgame" class="btn btn-success" value="Add"/>
     </form>
   </div>
 </div>
-
-
     {% endblock %}

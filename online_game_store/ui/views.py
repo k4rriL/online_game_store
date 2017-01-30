@@ -24,7 +24,7 @@ def game_info(request, gameId):
     game = get_object_or_404(Game, id=gameId)
     context["game"] = game
 
-    boughtGames = GamesOfPlayer.objects.all()
+    boughtGames = GamesOfPlayer.objects.filter(game=game)
     highscores = []
     for i in boughtGames:
         c = {}
@@ -122,7 +122,7 @@ def add_new_game(request):
 
     #TODO maybe return the page of developer's games
     #now also including the newly added game?
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/manage")
 
 
 def modify(request, gameId):
@@ -131,11 +131,19 @@ def modify(request, gameId):
     if game.count() > 0:
         game = Game.objects.get(id=gameId)
         games = GamesOfPlayer.objects.filter(game=game)
+        highscores = []
+        for i in games:
+            c = {}
+            c["score"] = i.highscore
+            c["name"] = i.user.user.first_name
+            highscores.append(c)
+        context["highscores"] = highscores
+
         context["game"] =  game
         context["games"] = games
         return render(request, "ui/modifygame.html", context)
 
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/manage")
 
 
 def modify_game(request):
@@ -158,7 +166,7 @@ def modify_game(request):
             game.save(update_fields=["description", "price", "name", "category", "address"])
 
     #TODO redirect to developer's games?
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/manage")
 
 def delete_game(request):
 
@@ -169,8 +177,21 @@ def delete_game(request):
             game.delete()
 
     #TODO redirect to developer's games?
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/manage")
 
+
+def your_games(request):
+    user = get_object_or_404(User, username="My Testuser")
+    player = get_object_or_404(Player, user=user)
+    context = {"player":player}
+    return render(request, "ui/index.html", context)
+
+
+def manage(request):
+    user = get_object_or_404(User, username="testidevaaja")
+    developer = get_object_or_404(Developer, user=user)
+    context = {"developer":developer}
+    return render(request, "ui/index.html", context)
 
 def calculateHash(str):
     m = md5()
