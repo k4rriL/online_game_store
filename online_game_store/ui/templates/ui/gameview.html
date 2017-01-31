@@ -1,6 +1,22 @@
 {% load staticfiles %}
-<div id="gamesDiv"></div>
+{% static "" as baseUrl %}
+
+<div id="gamesDiv">
+  {% if developer != None %}
+    <div class="col-md-3 col-sm-4 col-xs-6 card-container">
+      <div class="card"><a href="/addnewgame/"><span class=card-link></span></a>
+        <div class="card-image">
+          <img class="img-responsive" src="{{baseUrl}}plus.jpg" align="middle">
+          <span class="game-title">Add a game</span>
+        </div>
+      </div>
+    </div>
+  {% else %}
+  {% endif %}
+
+</div>
 <script>
+
 var articleOffset = 0;
 var timeout = null;
 
@@ -10,16 +26,6 @@ var articleLoader = function(url) {
     $.ajax({
         url: url,
         success: function(data) {
-          {% static "" as baseUrl %}
-          {% if developer != None %}
-            var add;
-            add ='<div class="col-md-3 col-sm-4 col-xs-6 card-container"> <div class="card"> ' +
-            '<a href="/addnewgame/"><span class=card-link></span></a>' +
-            '<div class="card-image"> <img class="img-responsive" src="{{baseUrl}}plus.jpg">' +
-            '<span class="game-title">Add a game</span></div></div></div>';
-            $('#gamesDiv').append(add);
-          {% else %}
-          {% endif %}
           if (data.length > 0) {
               for (var i = 0, total = data.length; i < total; i++) {
                 var description = data[i].description
