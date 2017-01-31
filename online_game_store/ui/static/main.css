@@ -37,9 +37,14 @@ body {
 }
 
 .card .game-title {
-    font-size: 24px;
+    font-size: calc(6px + 1.05vw);
     text-transform: uppercase;
-    padding: 16px;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top:5px;
+    display: block;
+
 }
 
 .card .card-image img {

@@ -65,6 +65,8 @@ var articleLoader = function(url) {
               {% endif %}
 						}
           }
+        var fontSize = parseInt($(".card-image").width() / 10)+"px";
+        $(".card-image span").css('font-size', fontSize);
         }
     });
 };
@@ -143,5 +145,12 @@ $(function() {
     });
 
 });
+
+$(window).resize(function() {
+    var fontSize = parseInt($(".card-image").width() / 10)+"px";
+    $(".card-image span").css('font-size', fontSize);
+});
+
+
 
 </script>
