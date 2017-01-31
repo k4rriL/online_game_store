@@ -3,6 +3,10 @@
 
 <div id="gamesDiv">
   {% if developer != None %}
+  <div class="row title-div">
+    <h1 class = "game-title col-md-5">Modify games</h1>
+    <h2 class = "game-title col-md-7">Total amount of game purchases: {{sum}}</h2>
+  </div>
     <div class="col-md-3 col-sm-4 col-xs-6 card-container">
       <div class="card"><a href="/addnewgame/"><span class=card-link></span></a>
         <div class="card-image">
@@ -11,7 +15,10 @@
         </div>
       </div>
     </div>
-  {% else %}
+  {% elif player != None %}
+    <div class="row title-div">
+        <h1 class="game-title">Your games</h1>
+    </div>
   {% endif %}
 
 </div>

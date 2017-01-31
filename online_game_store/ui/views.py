@@ -190,7 +190,11 @@ def your_games(request):
 def manage(request):
     user = get_object_or_404(User, username="testidevaaja")
     developer = get_object_or_404(Developer, user=user)
-    context = {"developer":developer}
+    p = developer.games.all()
+    sum = 0
+    for i in p:
+        sum = sum + i.purchaseCount
+    context = {"developer":developer, "sum":sum}
     return render(request, "ui/index.html", context)
 
 def calculateHash(str):
