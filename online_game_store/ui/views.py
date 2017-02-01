@@ -76,7 +76,6 @@ def game_purchase_success(request):
         new_relation.save()
         Game.objects.filter(id=game_id).update(purchaseCount=F("purchaseCount") + 1)
 
-    #TODO update this to redirect to game
     return HttpResponseRedirect("/game/"+ game_id)
 
 
@@ -90,7 +89,7 @@ def add_new_game(request):
     #Check if method is post
     if request.method == "POST":
 
-        form = forms.NewGameForm(request.POST)
+        form = forms.GameForm(request.POST)
         if form.is_valid():
 
             name = request.POST["name"]
@@ -141,21 +140,23 @@ def modify(request, gameId):
 def modify_game(request):
 
     if request.method == "POST":
-        gameId = request.POST["gameid"]
-        game = Game.objects.filter(id=gameId)
-        if game.count() > 0:
-            game = Game.objects.get(id=gameId)
-            description = request.POST["description"]
-            price = request.POST["price"]
-            name = request.POST["name"]
-            category = request.POST["category"]
-            address = request.POST["url"]
-            game.description = description
-            game.price = price
-            game.name = name
-            game.category = category
-            game.address = address
-            game.save(update_fields=["description", "price", "name", "category", "address"])
+        form = forms.GameForm(request.POST)
+        if form.is_valid():
+            gameId = request.POST["gameid"]
+            game = Game.objects.filter(id=gameId)
+            if game.count() > 0:
+                game = Game.objects.get(id=gameId)
+                description = request.POST["description"]
+                price = request.POST["price"]
+                name = request.POST["name"]
+                category = request.POST["category"]
+                address = request.POST["url"]
+                game.description = description
+                game.price = price
+                game.name = name
+                game.category = category
+                game.address = address
+                game.save(update_fields=["description", "price", "name", "category", "address"])
 
     #TODO redirect to developer's games?
     return HttpResponseRedirect("/")
