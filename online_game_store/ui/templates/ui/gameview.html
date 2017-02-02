@@ -1,6 +1,29 @@
 {% load staticfiles %}
-<div id="gamesDiv"></div>
+{% static "" as baseUrl %}
+
+<div id="gamesDiv">
+  {% if developer != None %}
+  <div class="row title-div">
+    <h1 class = "game-title col-md-5">Modify games</h1>
+    <h2 class = "game-title col-md-7">Total amount of game purchases: {{sum}}</h2>
+  </div>
+    <div class="col-md-3 col-sm-4 col-xs-6 card-container">
+      <div class="card"><a href="/addnewgame/"><span class=card-link></span></a>
+        <div class="card-image">
+          <img class="img-responsive" src="{{baseUrl}}plus.jpg" align="middle">
+          <span class="game-title">Add a game</span>
+        </div>
+      </div>
+    </div>
+  {% elif player != None %}
+    <div class="row title-div">
+        <h1 class="game-title">Your games</h1>
+    </div>
+  {% endif %}
+
+</div>
 <script>
+
 var articleOffset = 0;
 var timeout = null;
 
@@ -10,45 +33,50 @@ var articleLoader = function(url) {
     $.ajax({
         url: url,
         success: function(data) {
-            if (data.length > 0) {
-                for (var i = 0, total = data.length; i < total; i++) {
-                  var description = data[i].description
-                  var name = data[i].name
-                  if (typeof description !== 'undefined' && description.length > 65){
-                    description = description.substr(0, 63)+'..';
-                  }
-                  if (typeof name !== 'undefined' && name.length > 14){
-                    name = name.substr(0, 13)+'..';
-                  }
-                  {% static "" as baseUrl%}
-                    var compile_data;
-                    compile_data ='<div class="col-md-3 col-sm-4 col-xs-6 card-container"> <div class="card"> ' +
-                    '<a href="/game/' + data[i].id + '"><span class=card-link></span></a>' +
-                    '<div class="card-image"> <img class="img-responsive" src="{{baseUrl}}'+ data[i].category + '.jpg">' +
-                                '<span class="game-title">' + name + '</span></div>' +
-                                  '<div class="game-description"><p>'+  description + '</p>' +
-                            '</div><div class="game-category">'+data[i].category + '</div><div class="game-price">'+data[i].price +'€</div></div></div></div>';
-                    $('#gamesDiv').append(compile_data);
+          if (data.length > 0) {
+              for (var i = 0, total = data.length; i < total; i++) {
+                var description = data[i].description
+                var name = data[i].name
+                if (typeof description !== 'undefined' && description.length > 65){
+                  description = description.substr(0, 63) + '..';
                 }
+                if (typeof name !== 'undefined' && name.length > 14){
+                  name = name.substr(0, 13) + '..';
+                }
+                  var compile_data;
+                  {% if developer != None %}
+                  compile_data ='<div class="col-md-3 col-sm-4 col-xs-6 card-container"> <div class="card"> ' +
+                  '<a href="/modify/' + data[i].id + '"><span class=card-link></span></a>' +
+                  '<div class="card-image"> <img class="img-responsive" src="{{baseUrl}}'+ data[i].category + '.jpg">' +
+                              '<span class="game-title">' + name + '</span></div>' +
+                                '<div class="game-description"><p>'+  description + '</p>' +
+                          '</div><div class="game-category">'+data[i].category + '</div><div class="game-price">'+data[i].price +'€</div></div></div>';
+                  {% else %}
+                  compile_data ='<div class="col-md-3 col-sm-4 col-xs-6 card-container"> <div class="card"> ' +
+                  '<a href="/game/' + data[i].id + '"><span class=card-link></span></a>' +
+                  '<div class="card-image"> <img class="img-responsive" src="{{baseUrl}}'+ data[i].category + '.jpg">' +
+                              '<span class="game-title">' + name + '</span></div>' +
+                                '<div class="game-description"><p>'+  description + '</p>' +
+                          '</div><div class="game-category">'+data[i].category + '</div><div class="game-price">'+data[i].price +'€</div></div></div>';
+                  {% endif%}
+                  $('#gamesDiv').append(compile_data);
+              }
 
-                /* update the offset */
-                articleOffset += data.length
-            } else {
-							  if (articleOffset === 0){
-									$('#gamesDiv').append('No games found');
-								}
-            }
+              /* update the offset */
+              articleOffset += data.length
+          }
+          else {
+						if (articleOffset === 0){
+              {% if developer == None %}
+							  $('#gamesDiv').append('No games found');
+              {% endif %}
+						}
+          }
+        var fontSize = parseInt($(".card-image").width() / 10)+"px";
+        $(".card-image span").css('font-size', fontSize);
         }
     });
-}
-
-var category;
-
-{% if category != None %}
-  category = "{{category}}"
-{%else %}
-  category = ""
-{% endif %}
+};
 
 /* Infinite scrolling for fetching articles */
 var $window = $(window);
@@ -59,13 +87,21 @@ function prodScrollPosition() {
   timeout2 = setTimeout(function() {
     var distance = $window.scrollTop() + $window.height();
     if ($('body').height() <= distance && $('#gamesDiv')) {
-      if (category !== ""){
+      {% if category != None%}
+        console.log("category")
         articleLoader('/api/games/?offset=' + articleOffset + '&category=' + category);
-      }else{
+      {% elif player != None %}
+        console.log("player")
+        articleLoader('/api/games/?offset=' + articleOffset + '&player=' + {{player.user.id}});
+      {% elif developer != None %}
+        console.log("developer")
+        articleLoader('/api/games/?offset=' + articleOffset + '&developer=' + {{developer.user.id}});
+      {% else %}
+        console.log("basic")
         articleLoader('/api/games/?offset=' + articleOffset);
-      }
+      {% endif %}
+      };
 
-    }
   }, 50)
 }
 
@@ -83,11 +119,15 @@ $(function() {
 			    values[field.name] = field.value;
 			});
 			console.log(values["query"]);
-      if (category !== ""){
-        articleLoader('/api/games/?offset=' + articleOffset + '&category=' + category  + '&q=' + values["query"]);
-      }else{
-        articleLoader('/api/games/?offset=' + articleOffset  + '&q=' + values["query"]);
-      }
+      {% if category is not None %}
+        articleLoader('/api/games/?offset=' + articleOffset + '&category=' + category);
+      {% elif player is not None %}
+        articleLoader('/api/games/?offset=' + articleOffset + '&player=' + {{player.user.id}});
+      {% elif developer is not None %}
+        articleLoader('/api/games/?offset=' + articleOffset + '&developer=' + {{developer.user.id}});
+      {% else %}
+        articleLoader('/api/games/?offset=' + articleOffset);
+      {% endif %}
 		});
 
     $('#search').keyup(function(e){
@@ -99,17 +139,25 @@ $(function() {
         console.log(q);
         articleOffset = 0;
   			$('#gamesDiv').html("");
-
-        if (category !== ""){
-          articleLoader('/api/games/?offset=' + articleOffset + '&category=' + category  + '&q=' + q);
-        }else{
-          articleLoader('/api/games/?offset=' + articleOffset  + '&q=' + q);
-        }
+        {% if category is not None%}
+          articleLoader('/api/games/?offset=' + articleOffset + '&category=' + category);
+        {% elif player is not None %}
+          articleLoader('/api/games/?offset=' + articleOffset + '&player=' + {{player.user.id}});
+        {% elif developer is not None %}
+          articleLoader('/api/games/?offset=' + articleOffset + '&developer=' + {{developer.user.id}});
+        {% else %}
+          articleLoader('/api/games/?offset=' + articleOffset);
+        {% endif %}
       }, 150);
-
-
     });
 
 });
+
+$(window).resize(function() {
+    var fontSize = parseInt($(".card-image").width() / 10)+"px";
+    $(".card-image span").css('font-size', fontSize);
+});
+
+
 
 </script>

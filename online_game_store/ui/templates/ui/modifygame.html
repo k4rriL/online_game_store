@@ -6,7 +6,6 @@
 {% block header %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-<script type="text/javascript" src="{% static 'games.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -78,20 +77,21 @@
         </div>
         <div class="form-group">
           <label for="description">Description</label>
-          <textarea name="description" rows=4 class="form-control" required>{{ game.description }}</textarea><br>
+          <textarea name="description" rows=4 class="form-control" required>{{ game.description }}</textarea>
         </div>
         <div class="form-group">
           <input type="hidden" name="gameid" value="{{ game.id }}" class="form-control" required/>
         </div>
-        <input type="submit" id="submitgame" value="Save"/>
+        <input type="submit" id="submitgame" class="btn btn-info save-button" value="Save"/>
       </form>
       <form action="/deletegame/" method="POST" role="form" id="deleteform" class="form-horizontal">{% csrf_token %}
         <input type="hidden" name="gameid" value= "{{ game.id }}" />
-        <input type="submit" value="Delete game">
+        <input type="submit" value="Delete game" class="btn btn-danger delete-button">
       </form>
     </div>
     <div class="col-md-3 col-sm-6 col-xs-8">
       <h1>Highscores</h1>
+      <hr class="description-line"></hr>
       <table class="highscores-table">
         {% for i in highscores %}
           <tr>
@@ -102,13 +102,18 @@
     </div>
   </div>
   {% endif %}
-  <h1>Downloads</h1>
-  <h2>This game has been downloaded {{ games|length }} times</h2>
-  {% for game in games %}
-    <tr>
-      <td>{{game.user.user.username}}</td><td>{{game.purchaseTime}}</td>
-    </tr>
-  {%endfor%}
+  <div class="row purchases">
+    <h1>Purchases</h1>
+    <h3>Total amount of purchases: {{ games|length }}</h3>
+    <table class="purchases-table">
+      <tr class="tr-top"><td class="td-left">Name</td><td>Time</td></tr>
+      {% for game in games %}
+        <tr>
+          <td class="td-left">{{game.user.user.username}} </td><td> {{game.purchaseTime}}</td>
+        </tr>
+      {%endfor%}
+    </table>
+  </div>
 </div>
 
 {% endblock %}

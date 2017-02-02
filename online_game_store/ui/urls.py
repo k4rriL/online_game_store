@@ -26,7 +26,8 @@ urlpatterns = [
     url(r"^modifygame/$", views.modify_game, name='modify_game'),
     url(r"^modify/(?P<gameId>\w+)$", views.modify, name='modify'),
     url(r"^deletegame/$", views.delete_game, name='delete'),
-
+    url(r"^yourgames/$", views.your_games, name='your_games'),
+    url(r"^manage/$", views.manage, name='manage_games'),
 
     url(r"^$", views.front, name='home'),
 ]
