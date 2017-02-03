@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Online Game Store{% endblock %}
+
+{% block header %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+{% endblock %}
+
+{% block content %}
+{% static "" as baseUrl %}
+
+<div id="gamesDiv" class="game-info">
+  <div class="row title-div">
+    <h1 class="game-title">{{ game.name }}</h1>
+  </div>
+  {% if owned %}
+  <div class="row">
+    <div class="col-md-8 col-sm-12 col-xs-16 game-iframe">
+      <iframe src="{{game.address}}"></iframe>
+    </div>
+    <div class="col-md-3 col-sm-6 col-xs-8">
+      <h1>Highscores</h1>
+      <table class="highscores-table">
+        {% for i in highscores %}
+          <tr>
+            <td>{{i.name}}</td><td>{{i.score}}</td>
+          </tr>
+        {%endfor%}
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 col-sm-6 col-xs-8">
+      <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
+    </div>
+    <div class="col-md-4 col-sm-7 col-xs-9">
+      <h2 class="game-price">{{ game.price }} EUR</h2>
+      <h4 class="game-category">Category: {{ game.category }} </h4>
+      <h4 class="game-divider">Game description</h4>
+      <hr class="description-line"></hr>
+      <p class="game-description">{{ game.description }}</p>
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-md-4 col-sm-6 col-xs-8">
+      <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
+    </div>
+    <div class="col-md-4 col-sm-7 col-xs-9">
+      <form action="/modifygame/" method="POST" role="form" id="modificationform" class="form-horizontal">{% csrf_token %}
+        <div class="form-group"><br>
+          <label for="name"> Name of the game</label>
+          <input type="text" name="name" value="{{ game.name }}"placeholder="{{ name_error }}" class="form-control" required/>
+        </div>
+        <div class="form-group">
+          <label for="url">URL</label>
+          <input type="url" name="url" value="{{ game.address }}" class="form-control" required/>
+        </div>
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input type="number" step="0.01" name="price" value="{{ game.price }}" min="0" class="form-control" required/>
+        </div>
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select name="category" class="form-control" required>
+            <option>Action</option>
+            <option>Adventure</option>
+            <option>Casual</option>
+            <option>Racing</option>
+            <option>RPG</option>
+            <option>Sports</option>
+            <option>Strategy</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea name="description" rows=4 class="form-control" required>{{ game.description }}</textarea>
+        </div>
+        <div class="form-group">
+          <input type="hidden" name="gameid" value="{{ game.id }}" class="form-control" required/>
+        </div>
+        <input type="submit" id="submitgame" class="btn btn-info save-button" value="Save"/>
+      </form>
+      <form action="/deletegame/" method="POST" role="form" id="deleteform" class="form-horizontal">{% csrf_token %}
+        <input type="hidden" name="gameid" value= "{{ game.id }}" />
+        <input type="submit" value="Delete game" class="btn btn-danger delete-button">
+      </form>
+    </div>
+    <div class="col-md-3 col-sm-6 col-xs-8">
+      <h1>Highscores</h1>
+      <hr class="description-line"></hr>
+      <table class="highscores-table">
+        {% for i in highscores %}
+          <tr>
+            <td>{{i.name}}</td><td>{{i.score}}</td>
+          </tr>
+        {%endfor%}
+      </table>
+    </div>
+  </div>
+  {% endif %}
+  <div class="row purchases">
+    <h1>Purchases</h1>
+    <h3>Total amount of purchases: {{ games|length }}</h3>
+    <table class="purchases-table">
+      <tr class="tr-top"><td class="td-left">Name</td><td>Time</td></tr>
+      {% for game in games %}
+        <tr>
+          <td class="td-left">{{game.user.user.username}} </td><td> {{game.purchaseTime}}</td>
+        </tr>
+      {%endfor%}
+    </table>
+  </div>
+</div>
+
+{% endblock %}

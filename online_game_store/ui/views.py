@@ -24,7 +24,7 @@ def game_info(request, gameId):
     game = get_object_or_404(Game, id=gameId)
     context["game"] = game
 
-    boughtGames = GamesOfPlayer.objects.all()
+    boughtGames = GamesOfPlayer.objects.filter(game=game)
     highscores = []
     for i in boughtGames:
         c = {}
@@ -38,11 +38,10 @@ def game_info(request, gameId):
     context["player"] = player
 
     playersGames = GamesOfPlayer.objects.filter(user=player)
+    owned = False
     for i in playersGames:
         if i.game.id == game.id:
             owned = True
-        else:
-            owned = False
     context["owned"] = owned
     pid = str(game.id) + player.user.username.replace(" ", "")
     sid = "OnlineGameStore"
@@ -77,8 +76,8 @@ def game_purchase_success(request):
         new_relation.save()
         Game.objects.filter(id=game_id).update(purchaseCount=F("purchaseCount") + 1)
 
-    #TODO update this to redirect to game
     return HttpResponseRedirect("/game/"+ game_id)
+
 
 def add_new_game(request):
 
@@ -90,7 +89,7 @@ def add_new_game(request):
     #Check if method is post
     if request.method == "POST":
 
-        form = forms.NewGameForm(request.POST)
+        form = forms.GameForm(request.POST)
         if form.is_valid():
 
             name = request.POST["name"]
@@ -122,7 +121,82 @@ def add_new_game(request):
 
     #TODO maybe return the page of developer's games
     #now also including the newly added game?
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/manage")
+
+
+def modify(request, gameId):
+    context = {}
+    game = Game.objects.filter(id=gameId)
+    if game.count() > 0:
+        game = Game.objects.get(id=gameId)
+        games = GamesOfPlayer.objects.filter(game=game)
+        highscores = []
+        for i in games:
+            c = {}
+            c["score"] = i.highscore
+            c["name"] = i.user.user.first_name
+            highscores.append(c)
+        context["highscores"] = highscores
+
+        context["game"] =  game
+        context["games"] = games
+        return render(request, "ui/modifygame.html", context)
+
+    return HttpResponseRedirect("/manage")
+
+
+def modify_game(request):
+
+    if request.method == "POST":
+        form = forms.GameForm(request.POST)
+        if form.is_valid():
+            gameId = request.POST["gameid"]
+            game = Game.objects.filter(id=gameId)
+            if game.count() > 0:
+                game = Game.objects.get(id=gameId)
+                description = request.POST["description"]
+                price = request.POST["price"]
+                name = request.POST["name"]
+                category = request.POST["category"]
+                address = request.POST["url"]
+                game.description = description
+                game.price = price
+                game.name = name
+                game.category = category
+                game.address = address
+                game.save(update_fields=["description", "price", "name", "category", "address"])
+
+    #TODO redirect to developer's games?
+    return HttpResponseRedirect("/manage")
+
+def delete_game(request):
+
+    if request.method == "POST":
+        gameId = request.POST["gameid"]
+        if Game.objects.filter(id=gameId).count() > 0:
+            game = Game.objects.get(id=gameId)
+            game.delete()
+
+    #TODO redirect to developer's games?
+    return HttpResponseRedirect("/manage")
+
+
+def your_games(request):
+    user = get_object_or_404(User, username="My Testuser")
+    player = get_object_or_404(Player, user=user)
+    context = {"player":player}
+    return render(request, "ui/index.html", context)
+
+
+def manage(request):
+    user = get_object_or_404(User, username="testidevaaja")
+    developer = get_object_or_404(Developer, user=user)
+    p = developer.games.all()
+    sum = 0
+    for i in p:
+        sum = sum + i.purchaseCount
+    context = {"developer":developer, "sum":sum}
+    return render(request, "ui/index.html", context)
 
 def calculateHash(str):
     m = md5()
