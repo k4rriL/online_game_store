@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.conf.urls import include
 
 from . import views
 
@@ -23,5 +24,6 @@ urlpatterns = [
     url(r"^addnewgame/", views.add_new_game, name="addnewgame"),
     url(r"^game/(?P<gameId>\w+)$", views.game_info, name='game'),
     url(r"^category/(?P<category>\w+)$", views.category, name='category'),
+    url('^', include('django.contrib.auth.urls')),
     url(r"^$", views.front, name='home'),
 ]
