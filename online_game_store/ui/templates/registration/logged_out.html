@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Online Game Store{% endblock %}
+
+{% block header %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}?v=<?=time();?">
+{% endblock %}
+
+{% block content %}
+
+{{ title }}
+
+{% endblock %}
