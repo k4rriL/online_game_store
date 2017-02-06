@@ -89,7 +89,7 @@ function prodScrollPosition() {
     if ($('body').height() <= distance && $('#gamesDiv')) {
       {% if category != None%}
         console.log("category")
-        articleLoader('/api/games/?offset=' + articleOffset + '&category=' + category);
+        articleLoader('/api/games/?offset=' + articleOffset + '&category={{category}}');
       {% elif player != None %}
         console.log("player")
         articleLoader('/api/games/?offset=' + articleOffset + '&player=' + {{player.user.id}});
@@ -120,7 +120,7 @@ $(function() {
 			});
 			console.log(values["query"]);
       {% if category is not None %}
-        articleLoader('/api/games/?offset=' + articleOffset + '&category=' + category);
+        articleLoader('/api/games/?offset=' + articleOffset + '&category={{category}}');
       {% elif player is not None %}
         articleLoader('/api/games/?offset=' + articleOffset + '&player=' + {{player.user.id}});
       {% elif developer is not None %}
@@ -140,7 +140,7 @@ $(function() {
         articleOffset = 0;
   			$('#gamesDiv').html("");
         {% if category is not None%}
-          articleLoader('/api/games/?offset=' + articleOffset + '&category=' + category);
+          articleLoader('/api/games/?offset=' + articleOffset + '&category={{category}}');
         {% elif player is not None %}
           articleLoader('/api/games/?offset=' + articleOffset + '&player=' + {{player.user.id}});
         {% elif developer is not None %}

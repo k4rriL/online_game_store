@@ -12,18 +12,53 @@ from . import forms
 
 def front(request):
     context = {}
+    developerUser = None
+    playerUser = None
+    try:
+        playerUser = Player.objects.get(user=request.user)
+    except Player.DoesNotExist:
+        print("player does not exist")
+    try:
+        developerUser = Developer.objects.get(user=request.user)
+    except Developer.DoesNotExist:
+        print("developer does not exist")
+    context["playerUser"] = playerUser
+    context["developerUser"] = developerUser
     return render(request, "ui/index.html", context)
 
 
 def category(request, category):
     context = {"category":category}
+    developerUser = None
+    playerUser = None
+    try:
+        playerUser = Player.objects.get(user=request.user)
+    except Player.DoesNotExist:
+        print("player does not exist")
+    try:
+        developerUser = Developer.objects.get(user=request.user)
+    except Developer.DoesNotExist:
+        print("developer does not exist")
+    context["playerUser"] = playerUser
+    context["developerUser"] = developerUser
     return render(request, "ui/index.html", context)
 
 def game_info(request, gameId):
     context = {}
     game = get_object_or_404(Game, id=gameId)
     context["game"] = game
-
+    developerUser = None
+    playerUser = None
+    try:
+        playerUser = Player.objects.get(user=request.user)
+    except Player.DoesNotExist:
+        print("player does not exist")
+    try:
+        developerUser = Developer.objects.get(user=request.user)
+    except Developer.DoesNotExist:
+        print("developer does not exist")
+    context["playerUser"] = playerUser
+    context["developerUser"] = developerUser
     boughtGames = GamesOfPlayer.objects.filter(game=game)
     highscores = []
     for i in boughtGames:
@@ -32,11 +67,8 @@ def game_info(request, gameId):
         c["name"] = i.user.user.first_name
         highscores.append(c)
     context["highscores"] = highscores
-    #Test user
-    test_user = get_object_or_404(User, username="My Testuser")
-    player = get_object_or_404(Player, user=test_user)
+    player = get_object_or_404(Player, user=request.user)
     context["player"] = player
-
     playersGames = GamesOfPlayer.objects.filter(user=player)
     owned = False
     for i in playersGames:
@@ -65,9 +97,7 @@ def game_purchase_success(request):
     result = request.GET["result"]
     checksum = request.GET["checksum"]
     game = get_object_or_404(Game, id=game_id)
-    #Test user
-    test_user = get_object_or_404(User, username="My Testuser")
-    player = get_object_or_404(Player, user=test_user)
+    player = get_object_or_404(Player, user=request.user)
     secret_key = "5fa6f9b7ea1628e4d373b4003bce9eb5"
     checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
     correct_checksum = calculateHash(checksumstr)
@@ -182,20 +212,45 @@ def delete_game(request):
 
 
 def your_games(request):
-    user = get_object_or_404(User, username="My Testuser")
-    player = get_object_or_404(Player, user=user)
-    context = {"player":player}
+    context = {}
+    developerUser = None
+    playerUser = None
+    try:
+        playerUser = Player.objects.get(user=request.user)
+    except Player.DoesNotExist:
+        print("player does not exist")
+    try:
+        developerUser = Developer.objects.get(user=request.user)
+    except Developer.DoesNotExist:
+        print("developer does not exist")
+    context["playerUser"] = playerUser
+    context["developerUser"] = developerUser
+    player = get_object_or_404(Player, user=request.user)
+    context["player"] = player
     return render(request, "ui/index.html", context)
 
 
 def manage(request):
-    user = get_object_or_404(User, username="testidevaaja")
-    developer = get_object_or_404(Developer, user=user)
+    context = {}
+    developerUser = None
+    playerUser = None
+    try:
+        playerUser = Player.objects.get(user=request.user)
+    except Player.DoesNotExist:
+        print("player does not exist")
+    try:
+        developerUser = Developer.objects.get(user=request.user)
+    except Developer.DoesNotExist:
+        print("developer does not exist")
+    context["playerUser"] = playerUser
+    context["developerUser"] = developerUser
+    developer = get_object_or_404(Developer, user=request.user)
     p = developer.games.all()
     sum = 0
     for i in p:
         sum = sum + i.purchaseCount
-    context = {"developer":developer, "sum":sum}
+    context["developer"] = developer
+    context["sum"] = sum
     return render(request, "ui/index.html", context)
 
 def calculateHash(str):

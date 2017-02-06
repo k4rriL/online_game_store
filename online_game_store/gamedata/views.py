@@ -63,10 +63,11 @@ def games_json(request, page = 1):
         else:
             p = Game.objects.filter(name__contains = search).filter(category__exact = categoryRequested)[offset:end]
     except Game.DoesNotExist:
-        print("derps")
+        print("der")
         raise Http404("No games found")
     games = []
     if player is not None:
+        print("wtfs")
         data = json.dumps(p)
     else:
         for i in p:
