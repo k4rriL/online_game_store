@@ -30,13 +30,14 @@ var timeout = null;
 var timeout2 = null;
 
 var articleLoader = function(url) {
+  "use strict";
     $.ajax({
         url: url,
         success: function(data) {
           if (data.length > 0) {
-              for (var i = 0, total = data.length; i < total; i++) {
-                var description = data[i].description
-                var name = data[i].name
+              for (var i = 0; i < data.length; i++) {
+                var description = data[i].description;
+                var name = data[i].name;
                 if (typeof description !== 'undefined' && description.length > 65){
                   description = description.substr(0, 63) + '..';
                 }
@@ -63,10 +64,10 @@ var articleLoader = function(url) {
               }
 
               /* update the offset */
-              articleOffset += data.length
+              articleOffset += data.length;
           }
           else {
-						if (articleOffset === 0){
+            if (articleOffset === 0){
               {% if developer == None %}
 							  $('#gamesDiv').append('No games found');
               {% endif %}
@@ -81,6 +82,7 @@ var articleLoader = function(url) {
 /* Infinite scrolling for fetching articles */
 var $window = $(window);
 function prodScrollPosition() {
+  "use strict";
   if (timeout2) {
     clearTimeout(timeout2);
   }
@@ -96,9 +98,9 @@ function prodScrollPosition() {
       {% else %}
         articleLoader('/api/games/?offset=' + articleOffset);
       {% endif %}
-      };
+      }
 
-  }, 50)
+  }, 50);
 }
 
 $window.scroll(prodScrollPosition).scroll();
@@ -115,17 +117,17 @@ $(function() {
 			    values[field.name] = field.value;
 			});
       {% if category is not None %}
-        articleLoader('/api/games/?offset=' + articleOffset + '&category={{category}}' + '&q=' + values["query"]);
+        articleLoader('/api/games/?offset=' + articleOffset + '&category={{category}}' + '&q=' + values.query);
       {% elif player is not None %}
-        articleLoader('/api/games/?offset=' + articleOffset + '&player=' + {{player.user.id}} + '&q=' + values["query"]);
+        articleLoader('/api/games/?offset=' + articleOffset + '&player=' + {{player.user.id}} + '&q=' + values.query);
       {% elif developer is not None %}
-        articleLoader('/api/games/?offset=' + articleOffset + '&developer=' + {{developer.user.id}} + '&q=' + values["query"]);
+        articleLoader('/api/games/?offset=' + articleOffset + '&developer=' + {{developer.user.id}} + '&q=' + values.query);
       {% else %}
-        articleLoader('/api/games/?offset=' + articleOffset + '&q=' + values["query"]);
+        articleLoader('/api/games/?offset=' + articleOffset + '&q=' + values.query);
       {% endif %}
 		});
 
-    $('#search').keyup(function(e){
+    $('#search').keyup(function(event){
       if (timeout) {
         clearTimeout(timeout);
       }
@@ -148,6 +150,7 @@ $(function() {
 });
 
 $(window).resize(function() {
+  "use strict";
     var fontSize = parseInt($(".card-image").width() / 10)+"px";
     $(".card-image span").css('font-size', fontSize);
 });
