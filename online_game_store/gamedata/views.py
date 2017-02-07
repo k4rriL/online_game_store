@@ -30,7 +30,6 @@ def games_json(request, page = 1):
                 a["price"] = i.game.price
                 a["description"] = i.game.description
                 a["id"] = i.game.id
-                a["purchaseCount"] = i.game.purchaseCount
                 a["category"] = i.game.category
                 p.append(a)
         elif player is not None and search is not None:
@@ -44,7 +43,6 @@ def games_json(request, page = 1):
                     a["price"] = i.game.price
                     a["description"] = i.game.description
                     a["id"] = i.game.id
-                    a["purchaseCount"] = i.game.purchaseCount
                     a["category"] = i.game.category
                     p.append(a)
         elif developer is not None and search is None:
@@ -78,7 +76,6 @@ def games_json(request, page = 1):
             c["price"] = i.price
             c["description"] = i.description
             c["id"] = i.id
-            c["purchaseCount"] = i.purchaseCount
             c["category"] = i.category
             games.append(c)
         data = json.dumps(games)
