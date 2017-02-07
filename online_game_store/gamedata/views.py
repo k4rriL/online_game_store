@@ -11,7 +11,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 
-def games_json(request, page = 1):
+"""
+This view returns a list of games and information about them according to parameters:
+List of optional parameters:
+category: representing a category of games, e.g. Action
+q: represents a search query, the function will return all games that contain the query-string
+player: If only games owned by a certain player are wanted, the id of the user can be given as the value of this parameter
+developer: If only games owned by a certain developer, the id of the user can be given as the value of this parameter
+offset: if some games are already requested, you can use this parameter to get the next games
+
+The games will be returned in JSON format.
+"""
+def games_json(request):
     categoryRequested = request.GET.get("category")
     search = request.GET.get("q")
     player = request.GET.get("player")
@@ -47,9 +58,7 @@ def games_json(request, page = 1):
                     p.append(a)
         elif developer is not None and search is None:
             c = get_object_or_404(Developer, user__id=int(developer))
-            print(c.games)
             p = c.games.all()[offset:end]
-            print("as" + str(p.count()))
         elif developer is not None and search is not None:
             p = get_object_or_404(Developer, user__id=int(developer)).games.filter(name__contains = search)[offset:end]
         elif categoryRequested is None and search is None:
@@ -61,11 +70,15 @@ def games_json(request, page = 1):
         else:
             p = Game.objects.filter(name__contains = search).filter(category__exact = categoryRequested)[offset:end]
     except Game.DoesNotExist:
-        print("der")
         raise Http404("No games found")
     games = []
+
+    '''
+    Check whether data is already in dictionary or not and act accordingly.
+    This check is necessary because we have to loop through GamesOfPlayer objects
+    in above statements.
+    '''
     if player is not None:
-        print("wtfs")
         data = json.dumps(p)
     else:
         for i in p:
@@ -80,10 +93,11 @@ def games_json(request, page = 1):
             games.append(c)
         data = json.dumps(games)
 
+    #in case of JSONP
     if request.GET.get("callback") != None:
-        data = '%s(%s);' % (request.GET.get("callback"),data)
-        return HttpResponse(data, content_type="text/javascript")
-    return HttpResponse(data, content_type="application/json")
+        data = '%s(%s);' % (request.GET.get("callback"), data)
+        return HttpResponse(data, content_type = "text/javascript")
+    return HttpResponse(data, content_type = "application/json")
 
 
 #class for returning JSONResponse
@@ -100,7 +114,7 @@ class JSONResponse(HttpResponse):
 def game_list(request):
 
     games = Game.objects.all()
-    serializer = GameSerializer(games, many=True)
+    serializer = GameSerializer(games, many = True)
     return JSONResponse(serializer.data)
 
     return JSONResponse("[{}]")
@@ -110,9 +124,9 @@ def game_list(request):
 @csrf_exempt
 def game(request, gameid):
 
-    games = Game.objects.filter(id=gameid)
+    games = Game.objects.filter(id = gameid)
     if games.count() > 0:
-        game = Game.objects.get(id=gameid)
+        game = Game.objects.get(id = gameid)
         serializer = GameSerializer(game)
         return JSONResponse(serializer.data)
 
@@ -123,10 +137,10 @@ def game(request, gameid):
 @csrf_exempt
 def highscores(request, gameid):
 
-    game = Game.objects.get(id=gameid)
-    games = GamesOfPlayer.objects.filter(game=gameid)
+    game = Game.objects.get(id = gameid)
+    games = GamesOfPlayer.objects.filter(game = gameid)
     if games.count() > 0:
-        serializer = HighscoreSerializer(games, many=True)
+        serializer = HighscoreSerializer(games, many = True)
         return JSONResponse(serializer.data)
 
 '''
@@ -143,10 +157,10 @@ class AuthView(APIView):
     #returns highscores for authenticated developers
     def get(self, request):
 
-        developer = get_object_or_404(Developer, user=request.user)
+        developer = get_object_or_404(Developer, user = request.user)
         games = Game.objects.filter(developer = developer)
         if games.count() > 0:
-            serializer = SaleSerializer(games, many=True)
+            serializer = SaleSerializer(games, many = True)
             return JSONResponse(serializer.data)
 
         return JSONResponse("[{'no games'}]")

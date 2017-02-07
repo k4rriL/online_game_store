@@ -5,7 +5,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
-
+'''
+This model represents a single game
+developer field is a reference to Developer object
+'''
 class Game(models.Model):
     name = models.CharField(max_length = 100, unique = True)
     address = models.URLField()
@@ -29,12 +32,15 @@ class Game(models.Model):
     class Meta:
         ordering = ("-purchaseCount",)
 
+#Model 'extended' from user that represents a user that can buy games
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
 
+#Model 'extended' from user that represents a user that can add games
 class Developer(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
 
+#Model that represents a single game of a player (contains highscore etc. data)
 class GamesOfPlayer(models.Model):
     game = models.ForeignKey('Game')
     user = models.ForeignKey('Player', related_name = 'games')

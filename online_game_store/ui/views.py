@@ -9,6 +9,7 @@ from django.db.models import F
 import time
 from . import forms
 
+#Returns the front page of the website
 def front(request):
     context = {}
     developerUser = None
@@ -26,7 +27,7 @@ def front(request):
     context["developerUser"] = developerUser
     return render(request, "ui/index.html", context)
 
-
+#Returns a category page, category is defined by the parameter
 def category(request, category):
     context = {"category":category}
     developerUser = None
@@ -223,6 +224,8 @@ def delete_game(request):
 
     return HttpResponseRedirect("/manage")
 
+
+#Returns view with all games owned by a certain user
 @login_required
 def your_games(request):
     context = {}
@@ -245,6 +248,7 @@ def your_games(request):
     context["player"] = player
     return render(request, "ui/index.html", context)
 
+#Returns view with all games added to store by a certain developer
 @login_required
 def manage(request):
     context = {}
@@ -272,6 +276,7 @@ def manage(request):
     context["sum"] = sum
     return render(request, "ui/index.html", context)
 
+#Simple md5 hash function
 def calculateHash(str):
     m = md5()
     m.update(str.encode("ascii"))
