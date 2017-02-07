@@ -6,7 +6,6 @@
 {% block header %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-<script type="text/javascript" src="{% static 'games.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -53,6 +52,7 @@
       </div>
       <div class="col-md-4 col-sm-7 col-xs-9">
         <h2 class="game-price">{{ game.price }} EUR</h2>
+        {% if developerUser is None %}
         <form action={% if player is not None %}"http://payments.webcourse.niksula.hut.fi/pay/" method="POST" {% else %} "/login" method="GET" {% endif %}  class="game-purchase">
           <input type="hidden" name="pid" value= "{{ pid }}" />
           <input type="hidden" name="sid" value= "{{ sid }}" />
@@ -64,6 +64,9 @@
           <input type="hidden" name="next" value="/game/{{game.id}}"/>
           <input type="submit" value="Purchase" class="btn btn-success"/>
         </form>
+        {% else %}
+        <p class="game-purchase-developer">Developers can't buy games</p>
+        {% endif %}
         <h4 class="game-category">Category: {{ game.category }} </h4>
         <h4 class="game-divider">Game description</h4>
         <hr class="description-line"></hr>

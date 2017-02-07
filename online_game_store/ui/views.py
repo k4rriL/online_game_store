@@ -9,8 +9,6 @@ from django.db.models import F
 import time
 from . import forms
 
-# Create your views here.
-
 def front(request):
     context = {}
     developerUser = None
@@ -62,22 +60,23 @@ def game_info(request, gameId):
             developerUser = Developer.objects.get(user=request.user)
         except Developer.DoesNotExist:
             print("developer does not exist")
-        player = get_object_or_404(Player, user=request.user)
-        context["player"] = player
-        playersGames = GamesOfPlayer.objects.filter(user=player)
+        if playerUser is not None:
+            player = playerUser
+            context["player"] = player
+            playersGames = GamesOfPlayer.objects.filter(user=player)
 
-        for i in playersGames:
-            if i.game.id == game.id:
-                owned = True
-        pid = str(game.id) + player.user.username.replace(" ", "")
-        sid = "OnlineGameStore"
-        token = "5fa6f9b7ea1628e4d373b4003bce9eb5"
-        amount = game.price
-        checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, token)
-        checksum = calculateHash(checksumstr)
-        context["checksum"] = checksum
-        context["pid"] = pid
-        context["sid"] = sid
+            for i in playersGames:
+                if i.game.id == game.id:
+                    owned = True
+            pid = str(game.id) + player.user.username.replace(" ", "")
+            sid = "OnlineGameStore"
+            token = "5fa6f9b7ea1628e4d373b4003bce9eb5"
+            amount = game.price
+            checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, token)
+            checksum = calculateHash(checksumstr)
+            context["checksum"] = checksum
+            context["pid"] = pid
+            context["sid"] = sid
     context["owned"] = owned
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
