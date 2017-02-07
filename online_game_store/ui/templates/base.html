@@ -62,7 +62,7 @@
                   {% elif playerUser is not None %}
                     <li><a href="/yourgames">My Games</a></li>
                   {% endif %}
-                  <li><a href="{% url 'logout' %}">Log out</a></li>
+                  <li><a href="{% url 'logout' %}?next=/">Log out</a></li>
                 {% else %}
                 <li><a href="#">Register</a></li>
                 <li><a href="{% url 'login' %}">Log In</a></li>

@@ -53,14 +53,15 @@
       </div>
       <div class="col-md-4 col-sm-7 col-xs-9">
         <h2 class="game-price">{{ game.price }} EUR</h2>
-        <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST" class="game-purchase">
+        <form action={% if player is not None %}"http://payments.webcourse.niksula.hut.fi/pay/" method="POST" {% else %} "/login" method="GET" {% endif %}  class="game-purchase">
           <input type="hidden" name="pid" value= "{{ pid }}" />
           <input type="hidden" name="sid" value= "{{ sid }}" />
           <input type="hidden" name="success_url" value="http://localhost:8000/games/success?id={{ game.id }}" />
-          <input type="hidden" name="cancel_url" value="http://localhost:8000/games/" />
+          <input type="hidden" name="cancel_url" value="http://localhost:8000/game/{{game.id}}" />
           <input type="hidden" name="error_url" value="http://localhost:8000/" />
           <input type="hidden" name="checksum" value= "{{ checksum }}" />
           <input type="hidden" name="amount" value= "{{ game.price }}"/>
+          <input type="hidden" name="next" value="/game/{{game.id}}"/>
           <input type="submit" value="Purchase" class="btn btn-success"/>
         </form>
         <h4 class="game-category">Category: {{ game.category }} </h4>

@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from gamedata.models import Game, Player, GamesOfPlayer, Developer
 from django.contrib.auth.models import User
 from hashlib import md5
@@ -14,14 +15,15 @@ def front(request):
     context = {}
     developerUser = None
     playerUser = None
-    try:
-        playerUser = Player.objects.get(user=request.user)
-    except Player.DoesNotExist:
-        print("player does not exist")
-    try:
-        developerUser = Developer.objects.get(user=request.user)
-    except Developer.DoesNotExist:
-        print("developer does not exist")
+    if request.user.is_authenticated():
+        try:
+            playerUser = Player.objects.get(user=request.user)
+        except Player.DoesNotExist:
+            print("player does not exist")
+        try:
+            developerUser = Developer.objects.get(user=request.user)
+        except Developer.DoesNotExist:
+            print("developer does not exist")
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
     return render(request, "ui/index.html", context)
@@ -31,14 +33,15 @@ def category(request, category):
     context = {"category":category}
     developerUser = None
     playerUser = None
-    try:
-        playerUser = Player.objects.get(user=request.user)
-    except Player.DoesNotExist:
-        print("player does not exist")
-    try:
-        developerUser = Developer.objects.get(user=request.user)
-    except Developer.DoesNotExist:
-        print("developer does not exist")
+    if request.user.is_authenticated():
+        try:
+            playerUser = Player.objects.get(user=request.user)
+        except Player.DoesNotExist:
+            print("player does not exist")
+        try:
+            developerUser = Developer.objects.get(user=request.user)
+        except Developer.DoesNotExist:
+            print("developer does not exist")
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
     return render(request, "ui/index.html", context)
@@ -49,16 +52,36 @@ def game_info(request, gameId):
     context["game"] = game
     developerUser = None
     playerUser = None
-    try:
-        playerUser = Player.objects.get(user=request.user)
-    except Player.DoesNotExist:
-        print("player does not exist")
-    try:
-        developerUser = Developer.objects.get(user=request.user)
-    except Developer.DoesNotExist:
-        print("developer does not exist")
+    owned = False
+    if request.user.is_authenticated():
+        try:
+            playerUser = Player.objects.get(user=request.user)
+        except Player.DoesNotExist:
+            print("player does not exist")
+        try:
+            developerUser = Developer.objects.get(user=request.user)
+        except Developer.DoesNotExist:
+            print("developer does not exist")
+        player = get_object_or_404(Player, user=request.user)
+        context["player"] = player
+        playersGames = GamesOfPlayer.objects.filter(user=player)
+
+        for i in playersGames:
+            if i.game.id == game.id:
+                owned = True
+        pid = str(game.id) + player.user.username.replace(" ", "")
+        sid = "OnlineGameStore"
+        token = "5fa6f9b7ea1628e4d373b4003bce9eb5"
+        amount = game.price
+        checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, token)
+        checksum = calculateHash(checksumstr)
+        context["checksum"] = checksum
+        context["pid"] = pid
+        context["sid"] = sid
+    context["owned"] = owned
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
+
     boughtGames = GamesOfPlayer.objects.filter(game=game)
     highscores = []
     for i in boughtGames:
@@ -67,27 +90,9 @@ def game_info(request, gameId):
         c["name"] = i.user.user.first_name
         highscores.append(c)
     context["highscores"] = highscores
-    player = get_object_or_404(Player, user=request.user)
-    context["player"] = player
-    playersGames = GamesOfPlayer.objects.filter(user=player)
-    owned = False
-    for i in playersGames:
-        if i.game.id == game.id:
-            owned = True
-    context["owned"] = owned
-    pid = str(game.id) + player.user.username.replace(" ", "")
-    sid = "OnlineGameStore"
-    token = "5fa6f9b7ea1628e4d373b4003bce9eb5"
-    amount = game.price
-    checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, token)
-    checksum = calculateHash(checksumstr)
-    context["checksum"] = checksum
-    context["pid"] = pid
-    context["sid"] = sid
-
     return render(request, "ui/showgame.html", context)
 
-
+@login_required
 def game_purchase_success(request):
 
     context = {}
@@ -108,12 +113,9 @@ def game_purchase_success(request):
 
     return HttpResponseRedirect("/game/"+ game_id)
 
-
+@login_required
 def add_new_game(request):
-
-    #test user, TODO use authenticated developer
-    test_user = get_object_or_404(User, username="testidevaaja")
-    developer = Developer.objects.get(user=test_user)
+    developer = Developer.objects.get(user=request.user)
     context = {}
 
     #Check if method is post
@@ -149,13 +151,26 @@ def add_new_game(request):
     else:
         return render(request, "ui/addgame.html", context)
 
-    #TODO maybe return the page of developer's games
-    #now also including the newly added game?
     return HttpResponseRedirect("/manage")
 
-
+@login_required
 def modify(request, gameId):
     context = {}
+    playerUser = None
+    developerUser = None
+    if request.user.is_authenticated():
+        try:
+            playerUser = Player.objects.get(user=request.user)
+        except Player.DoesNotExist:
+            print("player does not exist")
+        try:
+            developerUser = Developer.objects.get(user=request.user)
+        except Developer.DoesNotExist:
+            print("developer does not exist")
+    context["playerUser"] = playerUser
+    context["developerUser"] = developerUser
+    if playerUser is not None:
+        return HttpResponseRedirect("/")
     game = Game.objects.filter(id=gameId)
     if game.count() > 0:
         game = Game.objects.get(id=gameId)
@@ -174,7 +189,7 @@ def modify(request, gameId):
 
     return HttpResponseRedirect("/manage")
 
-
+@login_required
 def modify_game(request):
 
     if request.method == "POST":
@@ -196,9 +211,9 @@ def modify_game(request):
                 game.address = address
                 game.save(update_fields=["description", "price", "name", "category", "address"])
 
-    #TODO redirect to developer's games?
     return HttpResponseRedirect("/manage")
 
+@login_required
 def delete_game(request):
 
     if request.method == "POST":
@@ -207,43 +222,48 @@ def delete_game(request):
             game = Game.objects.get(id=gameId)
             game.delete()
 
-    #TODO redirect to developer's games?
     return HttpResponseRedirect("/manage")
 
-
+@login_required
 def your_games(request):
     context = {}
     developerUser = None
     playerUser = None
-    try:
-        playerUser = Player.objects.get(user=request.user)
-    except Player.DoesNotExist:
-        print("player does not exist")
-    try:
-        developerUser = Developer.objects.get(user=request.user)
-    except Developer.DoesNotExist:
-        print("developer does not exist")
+    if request.user.is_authenticated():
+        try:
+            playerUser = Player.objects.get(user=request.user)
+        except Player.DoesNotExist:
+            print("player does not exist")
+        try:
+            developerUser = Developer.objects.get(user=request.user)
+        except Developer.DoesNotExist:
+            print("developer does not exist")
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
+    if developerUser is not None:
+        return HttpResponseRedirect("/")
     player = get_object_or_404(Player, user=request.user)
     context["player"] = player
     return render(request, "ui/index.html", context)
 
-
+@login_required
 def manage(request):
     context = {}
     developerUser = None
     playerUser = None
-    try:
-        playerUser = Player.objects.get(user=request.user)
-    except Player.DoesNotExist:
-        print("player does not exist")
-    try:
-        developerUser = Developer.objects.get(user=request.user)
-    except Developer.DoesNotExist:
-        print("developer does not exist")
+    if request.user.is_authenticated():
+        try:
+            playerUser = Player.objects.get(user=request.user)
+        except Player.DoesNotExist:
+            print("player does not exist")
+        try:
+            developerUser = Developer.objects.get(user=request.user)
+        except Developer.DoesNotExist:
+            print("developer does not exist")
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
+    if playerUser is not None:
+        return HttpResponseRedirect("/")
     developer = get_object_or_404(Developer, user=request.user)
     p = developer.games.all()
     sum = 0
