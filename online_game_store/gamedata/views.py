@@ -108,8 +108,12 @@ class JSONResponse(HttpResponse):
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
 
-
-#return all the available games
+'''
+This function is used to get all available games
+when request is made to API
+Creates new serializer from all available games
+and returns JSONResponse
+'''
 @csrf_exempt
 def game_list(request):
 
@@ -120,11 +124,16 @@ def game_list(request):
     return JSONResponse("[{}]")
 
 
-#return specific game
+'''
+Function for a case when specific game is
+requested. Returns wanted game as JSONResponse
+'''
 @csrf_exempt
 def game(request, gameid):
 
     games = Game.objects.filter(id = gameid)
+
+    #Check that the game exists
     if games.count() > 0:
         game = Game.objects.get(id = gameid)
         serializer = GameSerializer(game)
@@ -133,21 +142,26 @@ def game(request, gameid):
     return JSONResponse("[{}]")
 
 
-#return highscores of one game
+'''
+Function which returns highscores
+of a specific game. Returns highscores as JSONResponse
+'''
 @csrf_exempt
 def highscores(request, gameid):
 
     game = Game.objects.get(id = gameid)
     games = GamesOfPlayer.objects.filter(game = gameid)
+
+    #Check that the game exists
     if games.count() > 0:
         serializer = HighscoreSerializer(games, many = True)
         return JSONResponse(serializer.data)
+
 
 '''
 This class requires authentication token to
 to access its methods. Token needs to be in the
 headers of the GET request like Authorization: Token yourtokenhere
-
 '''
 class AuthView(APIView):
 
@@ -159,8 +173,11 @@ class AuthView(APIView):
 
         developer = get_object_or_404(Developer, user = request.user)
         games = Game.objects.filter(developer = developer)
+
+        #Check that there are any games
         if games.count() > 0:
             serializer = SaleSerializer(games, many = True)
             return JSONResponse(serializer.data)
 
-        return JSONResponse("[{'no games'}]")
+        #Case developer doesn't have any games return empty
+        return JSONResponse("[{}]")

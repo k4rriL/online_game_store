@@ -1,6 +1,7 @@
 from django import forms
 
-#Form for adding new game
+#Form for checking that the posted
+#data is valid, used when adding a new game
 class GameForm(forms.Form):
     name = forms.CharField(label="name")
     url = forms.URLField(label="url")
