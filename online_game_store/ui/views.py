@@ -8,6 +8,7 @@ from random import randint
 from django.db.models import F
 import time
 from . import forms
+from rest_framework.authtoken.models import Token
 
 #Returns the front page of the website
 def front(request):
@@ -104,7 +105,7 @@ def game_info(request, gameId):
     for i in boughtGames:
         c = {}
         c["score"] = i.highscore
-        c["name"] = i.user.user.first_name
+        c["name"] = i.user.user.username
         highscores.append(c)
 
     context["highscores"] = highscores
@@ -368,6 +369,8 @@ def manage(request):
     sum = 0
     for i in p:
         sum = sum + i.purchaseCount
+    token = get_object_or_404(Token, user=request.user)
+    context["token"] = token
     context["developer"] = developer
     context["sum"] = sum
     return render(request, "ui/index.html", context)

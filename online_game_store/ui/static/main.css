@@ -133,6 +133,10 @@ body {
   color: white;
 }
 
+.title-div p {
+  margin-top:25px;
+}
+
 .game-info .game-divider{
   padding-left: 10px;
   padding-right: 10px;
@@ -147,6 +151,7 @@ body {
 
 .game-info .highscores-table{
   margin-left: 5px;
+  text-transform: capitalize;
 }
 
 .game-info img{
@@ -205,6 +210,11 @@ body {
 
 .td-left{
   border-right: 1px solid #aaaaaa;
+  padding-right: 5px;
+}
+
+.td-right {
+  padding-left:5px;
 }
 
 .tr-top{

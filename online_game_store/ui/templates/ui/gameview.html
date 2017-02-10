@@ -4,8 +4,10 @@
 <div id="gamesDiv">
   {% if developer != None %}
   <div class="row title-div">
-    <h1 class = "game-title col-md-5">Modify games</h1>
-    <h2 class = "game-title col-md-7">Total amount of game purchases: {{sum}}</h2>
+    <h2 class = "game-title col-md-2">Manage</h2>
+    <h2 class = "game-title col-md-5">Sum of game purchases: {{sum}}</h2>
+    <p class="game-title col-md-5">API token: {{token.key}}</p>
+
   </div>
     <div class="col-md-3 col-sm-4 col-xs-6 card-container">
       <div class="card"><a href="/addnewgame/"><span class=card-link></span></a>
@@ -73,7 +75,7 @@ var articleLoader = function(url) {
               {% endif %}
 						}
           }
-        var fontSize = parseInt($(".card-image").width() / 10)+"px";
+        var fontSize = parseInt($(".card-image").width() / 10) + "px";
         $(".card-image span").css('font-size', fontSize);
         }
     });
@@ -151,7 +153,7 @@ $(function() {
 
 $(window).resize(function() {
   "use strict";
-    var fontSize = parseInt($(".card-image").width() / 10)+"px";
+    var fontSize = parseInt($(".card-image").width() / 10) + "px";
     $(".card-image span").css('font-size', fontSize);
 });
 

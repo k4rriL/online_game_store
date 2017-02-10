@@ -48,6 +48,9 @@ class GamesOfPlayer(models.Model):
     gameState = models.TextField()
     purchaseTime = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ("-highscore",)
+
 #Function for creating authentication token for users
 #automatically when new user is created
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

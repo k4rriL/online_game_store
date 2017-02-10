@@ -24,10 +24,9 @@
         <h1>Highscores</h1>
         <hr class="description-line"></hr>
         <table class="highscores-table">
-
           {% for i in highscores %}
             <tr>
-              <td>{{i.name}}</td><td>{{i.score}}</td>
+              <td class="td-left">{{i.name}}</td><td class="td-right">{{i.score}}</td>
             </tr>
           {%endfor%}
         </table>
@@ -79,7 +78,7 @@
         <table class="highscores-table">
           {% for i in highscores %}
             <tr>
-              <td class="td-left">{{i.name}}</td><td>{{i.score}}</td>
+              <td class="td-left">{{i.name}}</td><td class="td-right">{{i.score}}</td>
             </tr>
           {%endfor%}
         </table>
