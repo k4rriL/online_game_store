@@ -62,10 +62,10 @@
                 {% else %} <li><a href="#">My Games</a></li>
                 {% endif %}
               -->
-                <li><a href="#">Log out</a></li>
+                <li><a href="{% url 'logout' %}">Log out</a></li>
                 {% else %}
                 <li><a href="#">Register</a></li>
-                <li><a href="#">Log In</a></li>
+                <li><a href="{% url 'login' %}">Log In</a></li>
                 {% endif %}
               </ul>
             </div>

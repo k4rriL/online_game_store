@@ -15,10 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-
 from . import views
+
 
 urlpatterns = [
     url(r"^games/$", views.games_json, {'page': 1}, name='games'),
     url(r"^games/(?P<page>\w+)$", views.games_json, name='games'),
+    url(r"^v1/games/$", views.game_list, name='game_list'),
+    url(r"^v1/games/(?P<gameid>\w+)$", views.game, name='gameid'),
+    url(r"^v1/highscores/(?P<gameid>\w+)$", views.highscores, name='highscores'),
+    url(r'^v1/salenumbers/', views.AuthView.as_view(), name='auth-view'),
 ]
