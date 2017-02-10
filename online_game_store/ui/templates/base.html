@@ -34,14 +34,14 @@
                 <li class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Categories <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <li><a class="category" href="/category/ACT">Action</a></li>
-                    <li><a class="category" href="/category/ADV">Adventure</a></li>
-                    <li><a class="category" href="/category/CAS">Casual</a></li>
-                    <li><a class="category" href="/category/RAC">Racing</a></li>
+                    <li><a class="category" href="/category/Action">Action</a></li>
+                    <li><a class="category" href="/category/Adventure">Adventure</a></li>
+                    <li><a class="category" href="/category/Casual">Casual</a></li>
+                    <li><a class="category" href="/category/Racing">Racing</a></li>
                     <li><a class="category" href="/category/RPG">RPG</a></li>
-                    <li><a class="category" href="/category/SPO">Sports</a></li>
-                    <li><a class="category" href="/category/STR">Strategy</a></li>
-                    <li><a class="category" href="/category/OTH">Other</a></li>
+                    <li><a class="category" href="/category/Sports">Sports</a></li>
+                    <li><a class="category" href="/category/Strategy">Strategy</a></li>
+                    <li><a class="category" href="/category/Other">Other</a></li>
                   </ul>
                 </li>
 
@@ -56,13 +56,13 @@
               <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
 
-                <!-- if user is player put my games and if developer put Manage games
-                {% if user.type.Developer%}
-                <li><a href="#">Manage Games</a></li>
-                {% else %} <li><a href="#">My Games</a></li>
-                {% endif %}
-              -->
-                <li><a href="{% url 'logout' %}">Log out</a></li>
+                <!-- if user is player put my games and if developer put Manage games-->
+                  {% if developerUser is not None %}
+                    <li><a href="/manage">Manage Games</a></li>
+                  {% elif playerUser is not None %}
+                    <li><a href="/yourgames">My Games</a></li>
+                  {% endif %}
+                  <li><a href="{% url 'logout' %}?next=/">Log out</a></li>
                 {% else %}
                 <li><a href="#">Register</a></li>
                 <li><a href="{% url 'login' %}">Log In</a></li>

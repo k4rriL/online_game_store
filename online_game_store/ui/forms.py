@@ -1,6 +1,8 @@
 from django import forms
 
-#Form for adding new game
+#Form for checking that the posted
+#data is valid, used when adding a new game
+#or modifing one
 class GameForm(forms.Form):
     name = forms.CharField(label="name")
     url = forms.URLField(label="url")
@@ -19,3 +21,14 @@ class GameForm(forms.Form):
     )
 
     category = forms.ChoiceField(choices=CATEGORIES)
+
+
+#Form for checking that the data is valid
+#when the confirmation from the payment service
+#is requested
+class SuccessfulPaymentForm(forms.Form):
+    pid = forms.CharField
+    id = forms.IntegerField()
+    ref = forms.CharField()
+    result = forms.CharField()
+    checksum = forms.CharField()
