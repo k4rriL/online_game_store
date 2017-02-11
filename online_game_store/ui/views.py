@@ -23,7 +23,7 @@ def front(request):
         try:
             developerUser = Developer.objects.get(user=request.user)
         except Developer.DoesNotExist:
-            print("developer does not exist")
+            print("Developer does not exist")
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
     return render(request, "ui/index.html", context)
@@ -124,7 +124,6 @@ according to request.
 @login_required
 def game_purchase_success(request):
 
-    context = {}
     #Check that the request has correct parameters
     form = forms.SuccessfulPaymentForm(request.GET)
     if form.is_valid():
@@ -311,7 +310,7 @@ also delete their games.
 @login_required
 def delete_game(request):
 
-    if request.method == "POST":
+    if request.method == "POST" and "gameid" in request.POST:
 
         #Check that the game exists
         gameId = request.POST["gameid"]
