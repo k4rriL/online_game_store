@@ -175,7 +175,7 @@ def add_new_game(request):
     if request.method == "POST":
 
         #validate the posted form
-        form = forms.GameForm(request.POST)
+        form = forms.AddGameForm(request.POST)
         if form.is_valid():
 
             #Get infromation from the post request
@@ -240,10 +240,12 @@ def modify(request, gameId):
     if playerUser is not None:
         return HttpResponseRedirect("/")
 
-    #check that the game exists
-    game = Game.objects.filter(id=gameId)
+    #check that the game exists and that
+    #logged in developer owns it
+    game = Game.objects.filter(id=gameId).filter(developer=developerUser)
     if game.count() > 0:
 
+        '''
         game = Game.objects.get(id=gameId)
         games = GamesOfPlayer.objects.filter(game=game)
         highscores = []
@@ -259,10 +261,14 @@ def modify(request, gameId):
         context["highscores"] = highscores
         context["game"] =  game
         context["games"] = games
+        '''
+        game = Game.objects.get(id=gameId)
+        context = get_highscores_and_game_for_context(context, game)
+        context["name"] = game.name
 
         return render(request, "ui/modifygame.html", context)
 
-    return HttpResponseRedirect("/manage")
+    return HttpResponseRedirect("/manage/")
 
 
 '''
@@ -276,12 +282,15 @@ def modify_game(request):
     if request.method == "POST":
 
         #Validate the posted form
-        form = forms.GameForm(request.POST)
+        form = forms.ModifyGameForm(request.POST)
         if form.is_valid():
 
             #Get the game and check that it exists
+            #Also check that the game is really developed
+            #by the logged in developer
             gameId = request.POST["gameid"]
-            game = Game.objects.filter(id=gameId)
+            developer = get_object_or_404(Developer, user=request.user)
+            game = Game.objects.filter(id=gameId).filter(developer=developer)
             if game.count() > 0:
 
                 #Get information from the post request
@@ -293,15 +302,29 @@ def modify_game(request):
                 category = request.POST["category"]
                 address = request.POST["url"]
 
+                nameCount = Game.objects.filter(name=name).count()
                 game.description = description
                 game.price = price
-                game.name = name
                 game.category = category
                 game.address = address
 
-                game.save(update_fields=["description", "price", "name", "category", "address"])
+                #Check that if the developer changed the name
+                #or there is no game that has the same name
+                #as the new name
+                if name == game.name or nameCount == 0:
+                    game.name = name
+                    game.save(update_fields=["description", "price", "name", "category", "address"])
 
-    return HttpResponseRedirect("/manage")
+                #Else return to the modifygame view and set the
+                #context right
+                else:
+                    game.save(update_fields=["description", "price", "category", "address"])
+                    context = {}
+                    context = get_highscores_and_game_for_context(context, game)
+                    context["name_error"] = "Sorry, this name is already in use"
+                    return render(request, "ui/modifygame.html", context)
+
+    return HttpResponseRedirect("/manage/")
 
 '''
 Function so that the developers can
@@ -379,3 +402,28 @@ def calculateHash(str):
     m = md5()
     m.update(str.encode("ascii"))
     return m.hexdigest()
+
+
+'''
+function for updating relevant information
+to the context, used when displaying the
+manage view. Returns the updated context
+'''
+def get_highscores_and_game_for_context(context, game):
+
+    games = GamesOfPlayer.objects.filter(game=game)
+    highscores = []
+
+    #Get the highscores of a game so that they can be displayed
+    #in the same view.
+    for i in games:
+        c = {}
+        c["score"] = i.highscore
+        c["name"] = i.user.user.first_name
+        highscores.append(c)
+
+    context["highscores"] = highscores
+    context["game"] =  game
+    context["games"] = games
+
+    return context

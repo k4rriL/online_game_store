@@ -139,7 +139,7 @@ def game(request, gameid):
         serializer = GameSerializer(game)
         return JSONResponse(serializer.data)
 
-    return JSONResponse("[{}]")
+    return JSONResponse("{}")
 
 
 '''
@@ -149,13 +149,20 @@ of a specific game. Returns highscores as JSONResponse
 @csrf_exempt
 def highscores(request, gameid):
 
-    game = Game.objects.get(id = gameid)
-    games = GamesOfPlayer.objects.filter(game = gameid)
-
+    game = Game.objects.filter(id=gameid)
     #Check that the game exists
-    if games.count() > 0:
-        serializer = HighscoreSerializer(games, many = True)
-        return JSONResponse(serializer.data)
+    if game.count() > 0:
+
+        game = Game.objects.get(id = gameid)
+        games = GamesOfPlayer.objects.filter(game = gameid)
+        #Check that the game has been bought so that
+        #there are any highscores
+
+        if games.count() > 0:
+            serializer = HighscoreSerializer(games, many = True)
+            return JSONResponse(serializer.data)
+
+    return JSONResponse("[]")
 
 
 '''
@@ -180,4 +187,4 @@ class AuthView(APIView):
             return JSONResponse(serializer.data)
 
         #Case developer doesn't have any games return empty
-        return JSONResponse("[{}]")
+        return JSONResponse("[]")
