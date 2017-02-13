@@ -40,7 +40,7 @@ class GameDataViewTests(TestCase):
         self.assertEqual(as_json[1]["name"], game2.name)
         self.assertEqual(as_json[1]["price"], game2.price)
         self.assertEqual(as_json[1]["category"], game2.category)
-    
+
 
     def test_game(self):
 
@@ -108,8 +108,13 @@ class GameDataViewTests(TestCase):
 
         #Define some test data
         user_for_dev = User.objects.create_user(username="testdev", password="testpass")
+        user_for_player = User.objects.create_user(username="testplayer", password="testpass")
         developer = Developer.objects.create(user=user_for_dev)
+        player = Player.objects.create(user=user_for_player)
         game = Game.objects.create(name="test game", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="SPO")
+
+
+        token = Token.objects.get(user=user_for_dev)
 
         #Create client and make GET request
         client = Client()
@@ -117,6 +122,29 @@ class GameDataViewTests(TestCase):
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
 
-        #Check that the highscores are unavailable if
+        #Check that the sale numbers are unavailable if
         #correct HTTP headers are not given
         self.assertEqual(as_json["detail"], "Authentication credentials were not provided.")
+
+        #Make GET request with correct headers
+        response = client.get("/api/v1/salenumbers/", HTTP_AUTHORIZATION="Token " + str(token))
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+
+        #Check that the sale numbers are now available
+        self.assertEqual(as_json[0]["purchaseCount"], 0)
+        self.assertEqual(as_json[0]["name"], "test game")
+
+        #"Buy" game
+        game.purchaseCount = 1
+        game.save(update_fields=["purchaseCount"])
+
+        #Make GET request with correct headers
+        response = client.get("/api/v1/salenumbers/", HTTP_AUTHORIZATION="Token " + str(token))
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+
+        #Check that the sale numbers are available
+        #and the purchase count is be updated
+        self.assertEqual(as_json[0]["purchaseCount"], 1)
+        self.assertEqual(as_json[0]["name"], "test game")
