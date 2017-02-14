@@ -28,7 +28,7 @@ def games_json(request):
     player = request.GET.get("player")
     developer = request.GET.get("developer")
     gamesPerPage = 20
-    offset = int(request.GET.get('offset', 0))
+    offset = int(request.GET.get("offset", 0))
     end = offset + gamesPerPage
     try:
         if player is not None and search is None:
@@ -82,7 +82,6 @@ def games_json(request):
         data = json.dumps(p)
     else:
         for i in p:
-            print(i)
             c = {}
             c["name"] = i.name
             c["address"] = i.address

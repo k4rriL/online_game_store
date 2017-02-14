@@ -12,7 +12,101 @@ from rest_framework.authtoken.models import Token
 
 class GameDataViewTests(TestCase):
 
+    def test_games_json(self):
 
+        client = Client()
+        #Define some test data
+        user_for_dev = User.objects.create_user(username="testdev", password="testpass")
+        developer = Developer.objects.create(user=user_for_dev)
+        user_for_player = User.objects.create_user(username="testplayer", password="testpass")
+        player = Player.objects.create(user=user_for_player)
+        user_for_dev2 = User.objects.create_user(username="testdev2", password="testpass")
+        developer2 = Developer.objects.create(user=user_for_dev2)
+
+        game = Game.objects.create(name="Awesome game", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="ACT")
+        game2 = Game.objects.create(name="Test123", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer2, category="SPO")
+        game3 = Game.objects.create(name="Adventure", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="ADV")
+        game4 = Game.objects.create(name="Casual", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer2, category="CAS")
+
+        playerPurchase1 = GamesOfPlayer.objects.create(game=game, user=player, highscore=0, gameState = "")
+        playerPurchase2 = GamesOfPlayer.objects.create(game=game2, user=player, highscore=0, gameState = "")
+        playerPurchase3 = GamesOfPlayer.objects.create(game=game4, user=player, highscore=0, gameState = "")
+
+        #Check that the response contains correct
+        #information about these two games
+        response = client.get("/api/games/")
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(as_json[0]["id"], game.id)
+        self.assertEqual(as_json[1]["id"], game2.id)
+
+        #Check setting offset parameter
+        response = client.get("/api/games/", {"offset":"1"})
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(len(as_json), 3)
+        self.assertEqual(as_json[0]["id"], game2.id)
+
+        #Check if setting category parameter works
+        response = client.get("/api/games/", {"category":"SPO"})
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(len(as_json), 1)
+        self.assertEqual(as_json[0]["id"], game2.id)
+
+        #Check if setting query parameter works
+        response = client.get("/api/games/", {"q":"Awe"})
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(len(as_json), 1)
+        self.assertEqual(as_json[0]["id"], game.id)
+
+        #Check with another query
+        response = client.get("/api/games/", {"q":"a"})
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(len(as_json), 3)
+        self.assertEqual(as_json[0]["id"], game.id)
+        self.assertEqual(as_json[1]["id"], game3.id)
+        self.assertEqual(as_json[2]["id"], game4.id)
+
+        #Check category and query parameters together
+        response = client.get("/api/games/", {"q":"a", "category":"CAS"})
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(len(as_json), 1)
+        self.assertEqual(as_json[0]["id"], game4.id)
+
+        #Check setting developer parameter
+        response = client.get("/api/games/", {"developer":user_for_dev.id})
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(len(as_json), 2)
+        self.assertEqual(as_json[0]["id"], game.id)
+        self.assertEqual(as_json[1]["id"], game3.id)
+
+        #Check setting developer parameter and query
+        response = client.get("/api/games/", {"developer":user_for_dev.id, "q":"Adven"})
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(len(as_json), 1)
+        self.assertEqual(as_json[0]["id"], game3.id)
+
+        #Check setting player parameter
+        response = client.get("/api/games/", {"player":user_for_player.id})
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(len(as_json), 3)
+        self.assertEqual(as_json[0]["id"], game.id)
+        self.assertEqual(as_json[1]["id"], game2.id)
+        self.assertEqual(as_json[2]["id"], game4.id)
+
+        #Check setting player parameter and query
+        response = client.get("/api/games/", {"player":user_for_player.id, "q":"Test"})
+        content = response.content.decode("UTF-8")
+        as_json = json.loads(content)
+        self.assertEqual(len(as_json), 1)
+        self.assertEqual(as_json[0]["id"], game2.id)
 
     def test_game_list(self):
 
