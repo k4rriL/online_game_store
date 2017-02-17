@@ -29,6 +29,7 @@ urlpatterns = [
     url(r"^deletegame/$", views.delete_game, name='delete'),
     url(r"^yourgames/$", views.your_games, name='your_games'),
     url(r"^manage/$", views.manage, name='manage_games'),
+    url(r"^register/$", views.register, name='register'),
     url('^', include('django.contrib.auth.urls')),
     url(r"^$", views.front, name='home'),
 ]

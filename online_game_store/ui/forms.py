@@ -1,4 +1,15 @@
 from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+#Form for registering new users
+class RegisterForm(UserCreationForm):
+    typelist = [('player', 'Player'), ('developer', 'Developer')]
+    usertype = forms.ChoiceField(choices=typelist, widget=forms.RadioSelect(), initial='player', help_text='Players can only play, developers only upload games.', label="User type")
+
+    class Meta:
+        model = User
+        fields = ('username', 'email')
 
 #Form for checking that the posted
 #data is valid, used when adding a new game

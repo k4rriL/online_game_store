@@ -6,9 +6,12 @@ from hashlib import md5
 from django.http import HttpResponseRedirect
 from random import randint
 from django.db.models import F
+from django.db import DatabaseError, transaction
 import time
 from . import forms
 from rest_framework.authtoken.models import Token
+from ui.forms import RegisterForm
+from django.contrib.auth.forms import UserCreationForm
 
 #Returns the front page of the website
 def front(request):
@@ -427,3 +430,33 @@ def get_highscores_and_game_for_context(context, game):
     context["games"] = games
 
     return context
+
+#register new user to site
+def register(request):
+    context = {}
+    if request.method == "POST": # try to add the user
+        register_form = RegisterForm(data=request.POST)
+        if register_form.is_valid():
+            try:
+                # start transaction
+                with transaction.atomic():
+                    user = register_form.save()
+                    # TODO: disable user because email not yet verified
+                    #user.is_active = False
+                    user.save()
+                    if register_form.cleaned_data['usertype'] == 'developer':
+                        usertype = Developer(user=user)
+                    else:
+                        usertype = Player(user=user)
+                    usertype.save()
+                    # end of transaction, errors can be simulated with:
+                    # raise DatabaseError
+            except DatabaseError:
+                register_form.add_error(None, "Database error, please try again")
+                context["form"] = register_form
+                return render(request, "registration/register.html", context)
+            return redirect("home")
+    else: # show empty form
+        register_form = RegisterForm()
+    context["form"] = register_form
+    return render(request, "registration/register.html", context)
