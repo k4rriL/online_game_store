@@ -6,10 +6,27 @@
 {% block header %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+<!-- Open Graph Markup for sharing on Facebook -->
+<meta property="og:url"         content="{{ gameUrl }}" />
+<meta property="og:type"        content="website" />
+<meta property="og:title"       content="{{ game.name }}" />
+<meta property="og:description" content="{{ game.description }}" />
+<meta property="og:image"       content="{{ imgUrl }}" />
+
 {% endblock %}
 
 {% block content %}
 {% static "" as baseUrl %}
+
+  <!-- Load Facebook SDK for JavaScript -->
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=394563114244785";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
 {% if owned %}
 <script>
@@ -34,7 +51,8 @@ function receiveGameMsg (event)
 {
 	msg = event.data;
 	if (!msg.messageType) {
-		sendErrorMsg("Message must include messageType field!");
+		//sendErrorMsg("Message must include messageType field!");
+		// facebook sdk sends us some messages, disable this error
 		return;
 	}
 	$.ajaxSetup({
@@ -139,6 +157,8 @@ function receiveGameMsg (event)
   <div id="gamesDiv" class="game-info">
     <div class="row title-div">
       <h1 class="game-title">{{ game.name }}</h1>
+  <!-- Your share button code -->
+<div class="fb-share-button" data-href="{{ gameUrl }}" data-layout="button" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ gameUrl | urlencode }}&amp;src=sdkpreparse">Share</a></div>
     </div>
     {% if owned %}
     <div class="row">
