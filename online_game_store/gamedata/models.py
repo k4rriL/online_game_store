@@ -28,7 +28,7 @@ class Game(models.Model):
         ('OTH', 'Other')
     )
 
-    category = models.CharField(max_length = 7, choices = CATEGORIES)
+    category = models.CharField(max_length = 3, choices = CATEGORIES)
     class Meta:
         ordering = ("-purchaseCount",)
 
