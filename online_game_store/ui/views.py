@@ -246,18 +246,6 @@ def add_new_game(request):
         form = forms.AddGameForm(request.POST)
         if form.is_valid():
 		
-			CATEGORIES = (
-				('SPO', 'Sports'),
-				('RAC', 'Racing'),
-				('RPG', 'RPG'),
-				('ACT', 'Action'),
-				('ADV', 'Adventure'),
-				('CAS', 'Casual'),
-				('STR', 'Strategy'),
-				('OTH', 'Other')
-			)
-			
-
             #Get infromation from the post request
             name = request.POST["name"]
             url = request.POST["url"]
