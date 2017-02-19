@@ -251,8 +251,7 @@ def add_new_game(request):
             url = request.POST["url"]
             description = request.POST["description"]
             price = float(request.POST["price"])
-            category = request.POST["category"]
-			
+            category = request.POST["category"]			
 			category3 = ""
 			if category is "Sports":
 				category3 = "SPO"
