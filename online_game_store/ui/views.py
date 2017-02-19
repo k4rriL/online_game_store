@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from gamedata.models import Game, Player, GamesOfPlayer, Developer
 from django.contrib.auth.models import User
 from hashlib import md5
-from django.http import HttpResponseRedirect
+from django.http import *
 from random import randint
 from django.db.models import F
 from django.db import DatabaseError, transaction
@@ -115,6 +115,31 @@ def game_info(request, gameId):
 
     return render(request, "ui/showgame.html", context)
 
+'''
+Provide backend functionality for game-service interaction
+'''
+def game_interaction(request, gameId):
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+    game = get_object_or_404(Game, id=gameId)
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden()
+    player = None
+    try:
+        player = Player.objects.get(user=request.user)
+    except Player.DoesNotExist:
+        return HttpResponseForbidden()
+    boughtGame = None
+    try:
+        boughtGame = GamesOfPlayer.objects.get(game=game, user=player)
+    except GamesOfPlayer.DoesNotExist:
+        # player doesn't own the game
+        return HttpResponseForbidden()
+    except MultipleObjectsReturned:
+        # this should never happen
+        return HttpResponseServerError()
+
+    return HttpResponse("")
 
 '''
 Function for checking that the payment

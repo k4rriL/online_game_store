@@ -11,6 +11,126 @@
 {% block content %}
 {% static "" as baseUrl %}
 
+{% if owned %}
+<script>
+
+$( document ).ready(function() {
+	gameFrame = document.getElementById("gameFrame");
+	window.addEventListener("message", receiveGameMsg, false);
+});
+
+function sendErrorMsg (reason)
+{
+	console.log("Game interaction error: " + reason);
+	var message = {
+		messageType: "ERROR",
+		info: reason
+	};
+
+	gameFrame.contentWindow.postMessage(message, "{{game.address}}");
+}
+
+function receiveGameMsg (event)
+{
+	msg = event.data;
+	if (!msg.messageType) {
+		sendErrorMsg("Message must include messageType field!");
+		return;
+	}
+	$.ajaxSetup({
+		url: "{% url 'gameinteraction' gameId=game.id %}",
+		method: "POST",
+		data: {csrfmiddlewaretoken: "{{ csrf_token }}",
+			messageType: msg.messageType}
+	});
+	switch (msg.messageType) {
+	case "SCORE":
+		console.log("High score " + msg.score);
+		// update score on high score list on page
+		var scoreTable = document.getElementById("scoreTable");
+		var scoreInserted = false;
+		for (var i = 0; i < scoreTable.rows.length; i++) {
+			var row = scoreTable.rows[i];
+			if (!scoreInserted && row.cells[1].innerHTML <= msg.score) {
+				var newrow = scoreTable.insertRow(i)
+				var cell0 = newrow.insertCell(0);
+				var cell1 = newrow.insertCell(1);
+				cell0.innerHTML = "{{ playerUser.user.username }}";
+				cell1.innerHTML = msg.score;
+				cell0.className = "td-left";
+				cell1.className = "td-right";
+				scoreInserted = true;
+				// old row is now at i+1 if we want to delete it
+				i++;
+			}
+			if (row.cells[0].innerHTML === "{{ playerUser.user.username }}") {
+				if (scoreInserted) {
+					// inserted new score, delete old one
+					scoreTable.deleteRow(i);
+				}
+				// if the new score wasn't inserted, it was
+				// either lower or same as old one, so do nothing
+				break;
+			}
+		}
+
+		// send score to server
+		$.ajax({
+			data: {score: msg.score},
+			fail: function(data) {
+				sendErrorMsg("Ajax request for saving score failed");
+			},
+			success: function(data) {
+				console.log("Saving score succeeded");
+			}
+		});
+		break;
+	case "SAVE":
+		var stateStr = JSON.stringify(msg.gameState);
+		console.log("Saving state " + stateStr);
+		$.ajax({
+			data: {gameState: stateStr},
+			fail: function(data) {
+				sendErrorMsg("Ajax request for saving state failed");
+			},
+			success: function(data) {
+				console.log("Saving state succeeded");
+			}
+		});
+		break;
+	case "LOAD_REQUEST":
+		console.log("Load request");
+		$.ajax({
+			fail: function(data) {
+				sendErrorMsg("Ajax request for loading state failed");
+			},
+			success: function(data) {
+				console.log("Loading state succeeded");
+			}
+		});
+		break;
+	case "SETTING":
+		console.log("Settings received");
+		if (msg.options) {
+			if (msg.options.width) {
+				gameFrame.width = msg.options.width;
+				console.log("Setting game width to " + msg.options.width);
+			}
+			if (msg.options.height) {
+				gameFrame.height = msg.options.height;
+				console.log("Setting game height to " + msg.options.height);
+			}
+		}
+		break;
+	default:
+		sendErrorMsg("Invalid message type " + msg.messageType);
+	}
+	$.ajaxSetup();
+}
+
+</script>
+{% endif %}
+
   <div id="gamesDiv" class="game-info">
     <div class="row title-div">
       <h1 class="game-title">{{ game.name }}</h1>
@@ -18,12 +138,12 @@
     {% if owned %}
     <div class="row">
       <div class="col-md-8 col-sm-12 col-xs-16 game-iframe">
-        <iframe src="{{game.address}}"></iframe>
+        <iframe id="gameFrame" src="{{game.address}}"></iframe>
       </div>
       <div class="col-md-3 col-sm-6 col-xs-8">
         <h1>Highscores</h1>
         <hr class="description-line"></hr>
-        <table class="highscores-table">
+        <table id="scoreTable" class="highscores-table">
           {% for i in highscores %}
             <tr>
               <td class="td-left">{{i.name}}</td><td class="td-right">{{i.score}}</td>
