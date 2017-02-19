@@ -229,12 +229,29 @@ body {
   margin-bottom: 20px;
 }
 
-#id_username {
-  margin:10px;
+.container .facebook {
+  margin-left: 30px;
+  padding-left: 0px;
 }
 
-#id_password {
-  margin: 10px;
+.container .register-form  td{
+  padding: 10px;
+}
+
+.register-form table {
+  margin-bottom:15px;
+}
+
+#id_username {
+  margin-top: 10px;
+}
+
+#id_password2 {
+  margin-top: 10px;
+}
+
+#id_usertype  +br {
+  display:none;
 }
 
 $animation-duration: .2s;
