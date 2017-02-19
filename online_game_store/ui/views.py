@@ -15,6 +15,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import send_mail
 import string
 import django.urls
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 #Returns the front page of the website
 def front(request):
@@ -116,6 +117,13 @@ def game_info(request, gameId):
 
     context["highscores"] = highscores
 
+    gamePath = django.urls.reverse(game_info, kwargs={"gameId":gameId})
+    gameUrl = request.build_absolute_uri(gamePath)
+    context["gameUrl"] = gameUrl
+
+    imgPath = static(game.category + ".jpg")
+    imgUrl = request.build_absolute_uri(imgPath)
+    context["imgUrl"] = imgUrl
     return render(request, "ui/showgame.html", context)
 
 '''
