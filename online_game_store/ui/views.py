@@ -139,6 +139,35 @@ def game_interaction(request, gameId):
         # this should never happen
         return HttpResponseServerError()
 
+    messageType = None
+    try:
+        messageType = request.POST['messageType']
+    except KeyError:
+        return HttpResponseBadRequest()
+
+    if messageType == "SCORE":
+        try:
+            score = float(request.POST['score'])
+        except KeyError:
+            return HttpResponseBadRequest()
+        if score > boughtGame.highscore:
+            boughtGame.highscore = score
+            boughtGame.save()
+    elif messageType == "SAVE":
+        try:
+            gameState = request.POST['gameState']
+        except KeyError:
+            return HttpResponseBadRequest()
+        boughtGame.gameState = gameState
+        boughtGame.save()
+    elif messageType == "LOAD_REQUEST":
+        response = {}
+        response["messageType"] = "LOAD"
+        response["gameState"] = boughtGame.gameState
+        return JsonResponse(response)
+    else:
+        return HttpResponseBadRequest()
+
     return HttpResponse("")
 
 '''

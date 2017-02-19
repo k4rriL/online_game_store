@@ -105,7 +105,12 @@ function receiveGameMsg (event)
 				sendErrorMsg("Ajax request for loading state failed");
 			},
 			success: function(data) {
-				console.log("Loading state succeeded");
+				console.log("Returning state " + data.gameState);
+				message = {
+					messageType: "LOAD",
+					gameState: JSON.parse(data.gameState)
+				}
+				gameFrame.contentWindow.postMessage(message, "{{game.address}}");
 			}
 		});
 		break;
