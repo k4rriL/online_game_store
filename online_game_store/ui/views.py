@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from gamedata.models import Game, Player, GamesOfPlayer, Developer
+from gamedata.models import Game, Player, GamesOfPlayer, Developer, EmailVerificationToken
 from django.contrib.auth.models import User
 from hashlib import md5
 from django.http import *
-from random import randint
+from random import randint, choice
 from django.db.models import F
 from django.db import DatabaseError, transaction
 import time
@@ -12,6 +12,9 @@ from . import forms
 from rest_framework.authtoken.models import Token
 from ui.forms import RegisterForm
 from django.contrib.auth.forms import UserCreationForm
+from django.core.mail import send_mail
+import string
+import django.urls
 
 #Returns the front page of the website
 def front(request):
@@ -485,6 +488,21 @@ def get_highscores_and_game_for_context(context, game):
 
     return context
 
+#email verification confirmation
+def verifyemail(request, userId, token):
+    try:
+        v = EmailVerificationToken.objects.get(user=userId, token=token)
+    except EmailVerificationToken.DoesNotExist:
+        return HttpResponseBadRequest()
+    try:
+        u = User.objects.get(pk=userId)
+    except User.DoesNotExist:
+        return HttpResponseBadRequest()
+    u.is_active = True
+    u.save()
+    v.delete()
+    return render(request, "ui/message.html", {"message": "Email verification successfull, now log in" })
+
 #register new user to site
 def register(request):
     context = {}
@@ -495,21 +513,36 @@ def register(request):
                 # start transaction
                 with transaction.atomic():
                     user = register_form.save()
-                    # TODO: disable user because email not yet verified
-                    #user.is_active = False
+                    # disable user until email is verified
+                    user.is_active = False
                     user.save()
                     if register_form.cleaned_data['usertype'] == 'developer':
                         usertype = Developer(user=user)
                     else:
                         usertype = Player(user=user)
                     usertype.save()
+                    # generate email verification
+                    token = ''.join(choice(string.ascii_letters + string.digits) for i in range(32))
+                    EmailVerificationToken(user=user, token=token).save()
+                    path = django.urls.reverse(verifyemail, kwargs={"userId": str(user.pk), "token":token})
+                    targetUrl = request.scheme + "://" + request.get_host() + path
+                    hostname = request.get_host().split(":")[0]
+                    send_mail(
+                        'Online Game Store Email verification',
+                        'Click on the following link to verify your email to the service ' +
+                            '<a href="' + targetUrl + '">' + targetUrl + '</a>',
+                        'noreply@'+hostname,
+                        [user.email],
+                        fail_silently=False,
+                    )
+
                     # end of transaction, errors can be simulated with:
                     # raise DatabaseError
             except DatabaseError:
                 register_form.add_error(None, "Database error, please try again")
                 context["form"] = register_form
                 return render(request, "registration/register.html", context)
-            return redirect("home")
+            return render(request, "ui/message.html", {"message": "Email verification was sent to " + user.email })
     else: # show empty form
         register_form = RegisterForm()
     context["form"] = register_form
