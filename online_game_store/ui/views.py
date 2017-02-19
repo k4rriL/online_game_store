@@ -252,27 +252,9 @@ def add_new_game(request):
             description = request.POST["description"]
             price = float(request.POST["price"])
             category = request.POST["category"]
-            category3 = ""
-            if category is "Sports":
-                category3 = "SPO"
-            elif category is "Racing":
-                category3 = "RAC"
-            elif category is "RPG":
-                category3 = "RPG"
-            elif category is "Action":
-                category3 = "ACT"
-            elif category is "Adventure":
-                category3 = "ADV"
-            elif category is "Casual":
-                category3 = "CAS"
-            elif category is "Strategy":
-                category3 = "STR"
-            else:
-                category3 = "OTH"
-
             #Check that there are no games with same id and name
             if Game.objects.filter(name=name).count() == 0:
-                new_game = Game.objects.create(name=name, address=url, description=description, price=price, purchaseCount=0, developer=developer, category=category3)
+                new_game = Game.objects.create(name=name, address=url, description=description, price=price, purchaseCount=0, developer=developer, category=category)
                 new_game.save()
 
             #Else there is already a game with a same name

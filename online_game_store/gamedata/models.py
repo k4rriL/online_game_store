@@ -18,17 +18,17 @@ class Game(models.Model):
     developer = models.ForeignKey('Developer', related_name='games')
 
     CATEGORIES = (
-        ('SPO', 'Sports'),
-        ('RAC', 'Racing'),
+        ('Sports', 'Sports'),
+        ('Racing', 'Racing'),
         ('RPG', 'RPG'),
-        ('ACT', 'Action'),
-        ('ADV', 'Adventure'),
-        ('CAS', 'Casual'),
-        ('STR', 'Strategy'),
-        ('OTH', 'Other')
+        ('Action', 'Action'),
+        ('Adventure', 'Adventure'),
+        ('Casual', 'Casual'),
+        ('Strategy', 'Strategy'),
+        ('Other', 'Other')
     )
 
-    category = models.CharField(max_length = 3, choices = CATEGORIES)
+    category = models.CharField(max_length = 10, choices = CATEGORIES)
     class Meta:
         ordering = ("-purchaseCount",)
 
