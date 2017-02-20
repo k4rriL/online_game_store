@@ -64,11 +64,12 @@ def games_json(request):
         elif categoryRequested is None and search is None:
             p = Game.objects.all()[offset:end]
         elif categoryRequested is not None and search is None:
-            p = Game.objects.filter(category__exact = categoryRequested)[offset:end]
+            print(Game.categories_reverse[categoryRequested] + '')
+            p = Game.objects.filter(category__exact = Game.categories_reverse[categoryRequested])[offset:end]
         elif categoryRequested is None and search is not None:
             p = Game.objects.filter(name__contains = search)[offset:end]
         else:
-            p = Game.objects.filter(name__contains = search).filter(category__exact = categoryRequested)[offset:end]
+            p = Game.objects.filter(name__contains = search).filter(category__exact = Game.categories_reverse[categoryRequested])[offset:end]
     except Game.DoesNotExist:
         raise Http404("No games found")
     games = []

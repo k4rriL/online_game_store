@@ -16,28 +16,30 @@ class Game(models.Model):
     price = models.FloatField()
     purchaseCount = models.PositiveIntegerField()
     developer = models.ForeignKey('Developer', related_name='games')
-    SPORTS = 'SPO'
-    RACING = 'RAC'
-    RPG = 'RPG'
     ACTION = 'ACT'
     ADVENTURE = 'ADV'
     CASUAL = 'CAS'
+    RACING = 'RAC'
+    RPG = 'RPG'
+    SPORTS = 'SPO'
     STRATEGY = 'STR'
     OTHER = 'OTH'
     
     
     CATEGORIES = (
-        (SPORTS, 'Sports'),
-        (RACING, 'Racing'),
-        (RPG, 'RPG'),
         (ACTION, 'Action'),
         (ADVENTURE, 'Adventure'),
         (CASUAL, 'Casual'),
+        (RACING, 'Racing'),
+        (RPG, 'RPG'),
+        (SPORTS, 'Sports'),
         (STRATEGY, 'Strategy'),
         (OTHER, 'Other')
     )
+    
+    categories_reverse = dict((v, k) for k, v in CATEGORIES)
 
-    category = models.CharField(max_length = 3, choices = CATEGORIES, default=OTHER,)
+    category = models.CharField(max_length = 3, choices = CATEGORIES, default=ACTION,)
     class Meta:
         ordering = ("-purchaseCount",)
 

@@ -71,7 +71,7 @@ var articleLoader = function(url) {
           else {
             if (articleOffset === 0){
               {% if developer == None %}
-							  $('#gamesDiv').append('No games found');
+			    $('#gamesDiv').append('<p class="no-games">No games found</p>');
               {% endif %}
 						}
           }

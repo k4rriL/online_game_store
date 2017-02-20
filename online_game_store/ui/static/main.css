@@ -80,6 +80,11 @@ body {
   width: 100%;   /* Firefox, other Gecko */
 }
 
+.no-games {
+  margin-top:15px;
+  margin-bottom: 0px;
+}
+
 .card .game-category {
   font-size: x-large;
   color: #6b6161;
