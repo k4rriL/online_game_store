@@ -1,4 +1,4 @@
-# Online Game Store -- Plan and [document](#Document)
+# Online Game Store -- Plan and [document](#document)
 
 ### Team
 529523: Karri Lehtiranta
