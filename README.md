@@ -211,7 +211,20 @@ The website was made mobile and tablet friendly by cleverly using the CSS-librar
 The page will scale itself according to the size of the window use. Mobile friendliness has also been kept in mind 
 when positioning items and in general design.
 
+#### Game/service interaction
+The complete set of game-service interaction features was implemented for the site. This includes saving and loading the game state data,
+which is done using ajax from the server. High score list is updated locally to minimize latency, but the updates are also propagated to
+the server database. The site will inform the game if any of the operations fail or are invalid.
 
+#### Social media sharing
+Games can be shares on Facebook. The share will include the game's image, title and description.
+
+#### 3rd party login
+Login using Facebook account was enabled by using Python Social Auth modules social-core and social-app-django.
+
+#### Authentication
+In addition to Facebook login, the user can also register a account directly to the site. The use of Django Auth features
+should guarantee the robustness of the system.
 
 ####Quality of work:
 
@@ -229,6 +242,7 @@ The website is located in https://frozen-stream-39780.herokuapp.com/. The websit
 Player functionalities can be tested by using your Facebook-account or by creating an account by using the register functionality. 
 You can choose whether you want to create a player or a developer. Facebook accounts will automatically be of player-type. 
 A confirmation email is sent to the email you specified if you created your account without Facebook. 
+As the course documentation suggested, this was implemented with Django's Console Backend, so no actual emails are sent.
 
 
 
