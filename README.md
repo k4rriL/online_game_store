@@ -1,4 +1,4 @@
-# Online Game Store -- Plan
+# Online Game Store -- Plan and [document](#Document)
 
 ### Team
 529523: Karri Lehtiranta
@@ -170,17 +170,17 @@ the project as planned. Time management and communication can be challenges for 
 but the use of Trello for task management and having regular meetings should improve accountablity and
 communication.
 
+# Document
 
-
-###Task division
+### Task division
 
 In the beginning of the project when deciding the main features and planning the project we also divided the tasks as equally as we could. 
 We created a Trello board for all these tasks and for all tasks we marked the person in charge. 
 Link to this board https://trello.com/b/rPwbd7Ux/wonderful-app where the work distribution can be found. 
 
-###Implemented features
+### Implemented features
 
-####Basic player functionalities: 
+#### Basic player functionalities: 
 
 Player can browse through games by using search querys and categories. While searching, the games will automatically be loaded into the page. 
 New games can also be loaded dynamically by scrolling the page (if the store contains that many games). A player can view his own games in 'My Games' view. 
@@ -188,7 +188,7 @@ Player is capable of buying a new game using the payment system provided by the 
 the payment service uses checksums to validate the posted data and on our server checksum is also validated. The most difficult part was to make sure 
 this functionality is secure and that it can’t be misused.
 
-####Basic developer functionalities: 
+#### Basic developer functionalities: 
 
 Developer can add games and manage his own games. When developer is trying to add new game or modify one, our implemented functions check that 
 the data posted by the developer to our server is valid and that it doesn’t for example cause any constraint violations to our database. 
@@ -197,7 +197,7 @@ already existed and after this trying to return a view so that the user experien
 sale statistics from the manage view and the security restrictions including that developer can only modify his own games are also implemented. 
 As we have implemented every required feature from we would give ourselves the maximum points this category.
 
-####RESTful API:
+#### RESTful API:
 
 As an extra feature, we have also implemented an REST api to offer highscores, information about available games and 
 sales statistics and it is implemented using Django REST Framework. Access to these sales statistics requires Developer 
@@ -206,7 +206,7 @@ to be included in the headers of the GET request so no normal user can access in
 There were no problems implementing this feature and we were hoping to get the maximum points from this feature.  
 
 
-####Mobile Friendly:
+#### Mobile Friendly:
 The website was made mobile and tablet friendly by cleverly using the CSS-library Bootstrap and its features. 
 The page will scale itself according to the size of the window use. Mobile friendliness has also been kept in mind 
 when positioning items and in general design.
@@ -226,7 +226,7 @@ Login using Facebook account was enabled by using Python Social Auth modules soc
 In addition to Facebook login, the user can also register a account directly to the site. The use of Django Auth features
 should guarantee the robustness of the system.
 
-####Quality of work:
+#### Quality of work:
 
 When implementing this project our goal has been to write quality code and use the model-view-template structure, 
 although in some cases it has not been easy to follow DRY policy, for example when parsing posted data. 
@@ -236,7 +236,7 @@ dynamic page loading and mobile friendliness. Since we have tried to make certai
 we would like to get the maximum points.   
 
 
-###How to use:
+### How to use:
 
 The website is located in https://frozen-stream-39780.herokuapp.com/. The website has developers and players. 
 Player functionalities can be tested by using your Facebook-account or by creating an account by using the register functionality. 
