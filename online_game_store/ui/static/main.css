@@ -226,7 +226,7 @@ body {
 }
 
 .navbar {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .container .facebook {
@@ -234,16 +234,36 @@ body {
   padding-left: 0px;
 }
 
-.container .register-form  td{
+.container .register-form  td {
   padding: 10px;
 }
 
-.register-form table {
+.register-table {
   margin-bottom:15px;
 }
 
-#id_username {
-  margin-top: 10px;
+.add-game-table input, .add-game-table label, .add-game-table textarea, .add-game-table select {
+  margin-top:10px;
+  margin-bottom:5px;
+  margin-right:10px;
+}
+
+.add-game-table, .login-table, .register-table{
+  margin-bottom:10px;
+}
+
+.login-table input, .login-table label, .login-table textarea, .login-table select {
+  margin-top:10px;
+  margin-bottom:5px;
+  margin-right:10px;
+}
+
+.register-table ul label {
+  margin:0px;
+}
+
+.register-table #id_username {
+  margin-top:10px;
 }
 
 #id_password2 {

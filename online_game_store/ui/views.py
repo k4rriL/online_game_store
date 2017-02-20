@@ -10,7 +10,7 @@ from django.db import DatabaseError, transaction
 import time
 from . import forms
 from rest_framework.authtoken.models import Token
-from ui.forms import RegisterForm
+from ui.forms import RegisterForm, AddGameForm
 from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import send_mail
 import string
@@ -236,9 +236,22 @@ Game and checks that there is no game with the same name
 '''
 @login_required
 def add_new_game(request):
-    developer = Developer.objects.get(user=request.user)
     context = {}
-
+    developerUser = None
+    playerUser = None
+    if request.user.is_authenticated():
+        try:
+            playerUser = Player.objects.get(user=request.user)
+        except Player.DoesNotExist:
+            print("player does not exist")
+        try:
+            developerUser = Developer.objects.get(user=request.user)
+        except Developer.DoesNotExist:
+            print("developer does not exist")
+    context["playerUser"] = playerUser
+    context["developerUser"] = developerUser
+    developer = Developer.objects.get(user=request.user)
+    
     #Check if method is post
     if request.method == "POST":
 
@@ -248,7 +261,7 @@ def add_new_game(request):
 		
             #Get infromation from the post request
             name = request.POST["name"]
-            url = request.POST["url"]
+            url = request.POST["address"]
             description = request.POST["description"]
             price = float(request.POST["price"])
             category = request.POST["category"]
@@ -261,7 +274,7 @@ def add_new_game(request):
             #--> return the form filled with old parameters
             else:
                 context["name"] = name
-                context["url"] = url
+                context["address"] = url
                 context["description"] = description
                 context["price"] = price
                 context["name_error"] = "Sorry, this name is already in use"
@@ -272,6 +285,7 @@ def add_new_game(request):
 
     #if the request method wasn't post, return the form view
     else:
+        context["form"] = AddGameForm()
         return render(request, "ui/addgame.html", context)
 
     return HttpResponseRedirect("/manage")
@@ -311,24 +325,6 @@ def modify(request, gameId):
     #logged in developer owns it
     game = Game.objects.filter(id=gameId).filter(developer=developerUser)
     if game.count() > 0:
-
-        '''
-        game = Game.objects.get(id=gameId)
-        games = GamesOfPlayer.objects.filter(game=game)
-        highscores = []
-
-        #Get the highscores of a game so that they can be displayed
-        #in the same view.
-        for i in games:
-            c = {}
-            c["score"] = i.highscore
-            c["name"] = i.user.user.first_name
-            highscores.append(c)
-
-        context["highscores"] = highscores
-        context["game"] =  game
-        context["games"] = games
-        '''
         game = Game.objects.get(id=gameId)
         context = get_highscores_and_game_for_context(context, game)
         context["name"] = game.name

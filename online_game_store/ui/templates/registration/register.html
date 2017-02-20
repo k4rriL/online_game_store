@@ -9,20 +9,18 @@
 {% endblock %}
 
 {% block content %}
-
-<form method="post" class="form-horizontal register-form">
-	{% csrf_token %}
-	<table>
-	{{ form.as_table }}
-	</table>
-	<div class="form-group row">
-		<div class="col-md-1 col-sm-2 col-xs-2">
-			<button type="submit" class="btn btn-primary">Log In</button>
-		</div>
-		
-	</div>
-</form>
-<div class="col-md-2 col-sm-2 col-xs-3 facebook">
-	<a href="{% url "social:begin" "facebook" %}"><button class="btn btn-primary">Register with Facebook</button></a>
+<div id="gamesDiv" class="game-info">
+    <form method="post" class="form-horizontal register-form">
+        {% csrf_token %}
+        <table class="register-table">
+        {{ form.as_table }}
+        </table>
+        <div class="form-group col-md-1 col-sm-2 col-xs-2">
+            <button type="submit" class="btn btn-primary">Log In</button>
+        </div>
+    </form>
+    <div class="col-md-2 col-sm-2 col-xs-3 facebook">
+        <a href="{% url "social:begin" "facebook" %}"><button class="btn btn-primary">Register with Facebook</button></a>
+    </div>
 </div>
 {% endblock %}

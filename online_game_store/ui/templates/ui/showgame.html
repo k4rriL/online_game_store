@@ -5,7 +5,7 @@
 
 {% block header %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}?v=<?=time();?">
 <!-- Open Graph Markup for sharing on Facebook -->
 <meta property="og:url"         content="{{ gameUrl }}" />
 <meta property="og:type"        content="website" />
@@ -183,7 +183,7 @@ function receiveGameMsg (event)
       </div>
       <div class="col-md-4 col-sm-7 col-xs-9">
         <h2 class="game-price">{{ game.price }} EUR</h2>
-        <h4 class="game-category">Category: {{ game.category }} </h4>
+        <h4 class="game-category">Category: {{ game.get_category_display}} </h4>
         <h4 class="game-divider">Game description</h4>
         <hr class="description-line"></hr>
         <p class="game-description">{{ game.description }}</p>
@@ -211,7 +211,7 @@ function receiveGameMsg (event)
         {% else %}
         <p class="game-purchase-developer">Developers can't buy games</p>
         {% endif %}
-        <h4 class="game-category">Category: {{ game.category }} </h4>
+        <h4 class="game-category">Category: {{ game.get_category_display }} </h4>
         <h4 class="game-divider">Game description</h4>
         <hr class="description-line"></hr>
         <p class="game-description">{{ game.description }}</p>

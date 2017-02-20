@@ -5,7 +5,7 @@
 
 {% block header %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}?v=<?=time();?">
 {% endblock %}
 
 {% block content %}
@@ -37,7 +37,7 @@
     </div>
     <div class="col-md-4 col-sm-7 col-xs-9">
       <h2 class="game-price">{{ game.price }} EUR</h2>
-      <h4 class="game-category">Category: {{ game.category }} </h4>
+      <h4 class="game-category">Category: {{ game.get_category_display }} </h4>
       <h4 class="game-divider">Game description</h4>
       <hr class="description-line"></hr>
       <p class="game-description">{{ game.description }}</p>
@@ -46,7 +46,7 @@
   {% else %}
   <div class="row">
     <div class="col-md-4 col-sm-6 col-xs-8">
-      <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
+      <img src="{{baseUrl}}{{game.get_category_display}}.jpg" class="img-responsive" alt="">
     </div>
     <div class="col-md-4 col-sm-7 col-xs-9">
       <form action="/modifygame/" method="POST" role="form" id="modificationform" class="form-horizontal">{% csrf_token %}
