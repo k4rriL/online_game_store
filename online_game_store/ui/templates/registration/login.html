@@ -6,24 +6,27 @@
 {% block header %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}?v=<?=time();?">
+<link rel="stylesheet" type="text/css" href="{% static 'authentication.css' %}?v=<?=time();?">
 {% endblock %}
 
 {% block content %}
 
 {% if form.errors %}
 {% endif %}
-<div id="gamesDiv" class="game-info">
-    <form method="post" class="form-horizontal">
-        {% csrf_token %}
-        <table class="login-table">
-        {{ form.as_table }}
-        </table>
-        <div class="form-group col-md-1 col-sm-2 col-xs-2">
-                <button type="submit" class="btn btn-primary">Log In</button>		
-        </div>        
-    </form>
-    <div class="col-md-2 col-sm-2 col-xs-3 facebook">
-        <a href="{% url "social:begin" "facebook" %}"><button class="btn btn-primary">Login with Facebook</button></a>
+<div id="gamesDiv" class="login">
+  <form method="post" class="form-horizontal">
+    {% csrf_token %}
+    <table class="login-table">
+      {{ form.as_table }}
+    </table>
+    <div class="form-group col-md-1 col-sm-2 col-xs-2 login-button">
+      <button type="submit" class="btn btn-primary">Log In</button>
     </div>
+  </form>
+  <div class="col-md-2 col-sm-2 col-xs-3 facebook">
+    <form action="{% url "social:begin" "facebook" %}">
+      <button class="btn btn-primary">Login with Facebook</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

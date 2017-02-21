@@ -13,8 +13,7 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ('username', 'email')
 
-#Form for checking that the posted
-#data is valid, used when adding a new game
+#Form for adding a new game
 class AddGameForm(ModelForm):
     class Meta:
         model = Game

@@ -6,6 +6,7 @@
 {% block header %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}?v=<?=time();?">
+<link rel="stylesheet" type="text/css" href="{% static 'info.css' %}?v=<?=time();?">
 <!-- Open Graph Markup for sharing on Facebook -->
 <meta property="og:url"         content="{{ gameUrl }}" />
 <meta property="og:type"        content="website" />
@@ -70,7 +71,7 @@ function receiveGameMsg (event)
 		for (var i = 0; i < scoreTable.rows.length; i++) {
 			var row = scoreTable.rows[i];
 			if (!scoreInserted && row.cells[1].innerHTML <= msg.score) {
-				var newrow = scoreTable.insertRow(i)
+				var newrow = scoreTable.insertRow(i);
 				var cell0 = newrow.insertCell(0);
 				var cell1 = newrow.insertCell(1);
 				cell0.innerHTML = "{{ playerUser.user.username }}";
@@ -127,7 +128,7 @@ function receiveGameMsg (event)
 				message = {
 					messageType: "LOAD",
 					gameState: JSON.parse(data.gameState)
-				}
+				};
 				gameFrame.contentWindow.postMessage(message, "{{game.address}}");
 			}
 		});
@@ -157,79 +158,79 @@ function receiveGameMsg (event)
   <div id="gamesDiv" class="game-info">
     <div class="row title-div">
       <h1 class="game-title">{{ game.name }}</h1>
-  <!-- Your share button code -->
-<div class="fb-share-button" data-href="{{ gameUrl }}" data-layout="button" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ gameUrl | urlencode }}&amp;src=sdkpreparse">Share</a></div>
+      <!-- Facebook share button-->
+      <div class="fb-share-button" data-href="{{ gameUrl }}" data-layout="button" data-size="small" data-mobile-iframe="true">
+        <a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ gameUrl | urlencode }}&amp;src=sdkpreparse">Share</a>
+      </div>
     </div>
     {% if owned %}
-    <div class="row">
-      <div class="col-md-8 col-sm-12 col-xs-16 game-iframe">
-        <iframe id="gameFrame" src="{{game.address}}"></iframe>
+      <div class="row">
+        <div class="col-md-8 col-sm-12 col-xs-16 game-iframe">
+          <iframe id="gameFrame" src="{{game.address}}"></iframe>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-8">
+          <h1>Highscores</h1>
+          <hr class="divider-line"></hr>
+          <table id="scoreTable" class="highscores-table">
+            {% for i in highscores %}
+              <tr>
+                <td class="td-left">{{i.name}}</td><td class="td-right">{{i.score}}</td>
+              </tr>
+            {%endfor%}
+          </table>
+        </div>
       </div>
-      <div class="col-md-3 col-sm-6 col-xs-8">
-        <h1>Highscores</h1>
-        <hr class="description-line"></hr>
-        <table id="scoreTable" class="highscores-table">
-          {% for i in highscores %}
-            <tr>
-              <td class="td-left">{{i.name}}</td><td class="td-right">{{i.score}}</td>
-            </tr>
-          {%endfor%}
-        </table>
+      <div class="row">
+        <div class="col-md-4 col-sm-6 col-xs-8">
+          <img src="{{baseUrl}}{{game.get_category_display}}.jpg" class="img-responsive" alt="">
+        </div>
+        <div class="col-md-4 col-sm-7 col-xs-9">
+          <h2 class="game-price">{{ game.price }} EUR</h2>
+          <h4 class="game-category">Category: {{ game.get_category_display}} </h4>
+          <h4 class="game-divider">Game description</h4>
+          <hr class="divider-line"/>
+          <p class="game-description">{{ game.description }}</p>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4 col-sm-6 col-xs-8">
-        <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
-      </div>
-      <div class="col-md-4 col-sm-7 col-xs-9">
-        <h2 class="game-price">{{ game.price }} EUR</h2>
-        <h4 class="game-category">Category: {{ game.get_category_display}} </h4>
-        <h4 class="game-divider">Game description</h4>
-        <hr class="description-line"></hr>
-        <p class="game-description">{{ game.description }}</p>
-      </div>
-    </div>
     {% else %}
-    <div class="row">
-      <div class="col-md-4 col-sm-6 col-xs-8">
-        <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
+      <div class="row">
+        <div class="col-md-4 col-sm-6 col-xs-8">
+          <img src="{{baseUrl}}{{game.get_category_display}}.jpg" class="img-responsive" alt="">
+        </div>
+        <div class="col-md-4 col-sm-7 col-xs-9">
+          <h2 class="game-price">{{ game.price }} EUR</h2>
+          {% if developerUser is None %}
+            <form action={% if player is not None %}"http://payments.webcourse.niksula.hut.fi/pay/" method="POST" {% else %} "/login" method="GET" {% endif %}  class="game-purchase">
+              <input type="hidden" name="pid" value= "{{ pid }}" />
+              <input type="hidden" name="sid" value= "{{ sid }}" />
+              <input type="hidden" name="success_url" value="http://localhost:8000/games/success?id={{ game.id }}" />
+              <input type="hidden" name="cancel_url" value="http://localhost:8000/game/{{game.id}}" />
+              <input type="hidden" name="error_url" value="http://localhost:8000/" />
+              <input type="hidden" name="checksum" value= "{{ checksum }}" />
+              <input type="hidden" name="amount" value= "{{ game.price }}"/>
+              <input type="hidden" name="next" value="/game/{{game.id}}"/>
+              <input type="submit" value="Purchase" class="btn btn-success"/>
+            </form>
+          {% else %}
+            <p class="game-purchase-developer">Developers can't buy games</p>
+          {% endif %}
+          <h4 class="game-category">Category: {{ game.get_category_display }} </h4>
+          <h4 class="game-divider">Game description</h4>
+          <hr class="divider-line"/>
+          <p class="game-description">{{ game.description }}</p>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-8">
+          <h1>Highscores</h1>
+          <hr class="divider-line"/>
+          <table class="highscores-table">
+            {% for i in highscores %}
+              <tr>
+                <td class="td-left">{{i.name}}</td><td class="td-right">{{i.score}}</td>
+              </tr>
+            {%endfor%}
+          </table>
+        </div>
       </div>
-      <div class="col-md-4 col-sm-7 col-xs-9">
-        <h2 class="game-price">{{ game.price }} EUR</h2>
-        {% if developerUser is None %}
-        <form action={% if player is not None %}"http://payments.webcourse.niksula.hut.fi/pay/" method="POST" {% else %} "/login" method="GET" {% endif %}  class="game-purchase">
-          <input type="hidden" name="pid" value= "{{ pid }}" />
-          <input type="hidden" name="sid" value= "{{ sid }}" />
-          <input type="hidden" name="success_url" value="http://localhost:8000/games/success?id={{ game.id }}" />
-          <input type="hidden" name="cancel_url" value="http://localhost:8000/game/{{game.id}}" />
-          <input type="hidden" name="error_url" value="http://localhost:8000/" />
-          <input type="hidden" name="checksum" value= "{{ checksum }}" />
-          <input type="hidden" name="amount" value= "{{ game.price }}"/>
-          <input type="hidden" name="next" value="/game/{{game.id}}"/>
-          <input type="submit" value="Purchase" class="btn btn-success"/>
-        </form>
-        {% else %}
-        <p class="game-purchase-developer">Developers can't buy games</p>
-        {% endif %}
-        <h4 class="game-category">Category: {{ game.get_category_display }} </h4>
-        <h4 class="game-divider">Game description</h4>
-        <hr class="description-line"></hr>
-        <p class="game-description">{{ game.description }}</p>
-
-      </div>
-      <div class="col-md-3 col-sm-6 col-xs-8">
-        <h1>Highscores</h1>
-        <hr class="description-line"></hr>
-        <table class="highscores-table">
-          {% for i in highscores %}
-            <tr>
-              <td class="td-left">{{i.name}}</td><td class="td-right">{{i.score}}</td>
-            </tr>
-          {%endfor%}
-        </table>
-      </div>
-    </div>
     {% endif %}
   </div>
-
 {% endblock %}

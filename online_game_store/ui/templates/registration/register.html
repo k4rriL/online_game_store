@@ -6,10 +6,11 @@
 {% block header %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}?v=<?=time();?">
+<link rel="stylesheet" type="text/css" href="{% static 'authentication.css' %}?v=<?=time();?">
 {% endblock %}
 
 {% block content %}
-<div id="gamesDiv" class="game-info">
+<div id="gamesDiv" class="register">
     <form method="post" class="form-horizontal register-form">
         {% csrf_token %}
         <table class="register-table">
@@ -20,7 +21,9 @@
         </div>
     </form>
     <div class="col-md-2 col-sm-2 col-xs-3 facebook">
-        <a href="{% url "social:begin" "facebook" %}"><button class="btn btn-primary">Register with Facebook</button></a>
+      <form action="{% url "social:begin" "facebook" %}">
+        <button class="btn btn-primary">Register with Facebook</button>
+      </form>
     </div>
 </div>
 {% endblock %}
