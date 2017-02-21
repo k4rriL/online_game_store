@@ -1,4 +1,4 @@
-# Online Game Store -- Plan
+# Online Game Store -- Plan and [document](#document)
 
 ### Team
 529523: Karri Lehtiranta
@@ -169,3 +169,81 @@ The team members are well committed to the project and should have all the resou
 the project as planned. Time management and communication can be challenges for our project,
 but the use of Trello for task management and having regular meetings should improve accountablity and
 communication.
+
+# Document
+
+### Task division
+
+In the beginning of the project when deciding the main features and planning the project we also divided the tasks as equally as we could. 
+We created a Trello board for all these tasks and for all tasks we marked the person in charge. 
+Link to this board https://trello.com/b/rPwbd7Ux/wonderful-app where the work distribution can be found. 
+
+### Implemented features
+
+#### Basic player functionalities: 
+
+Player can browse through games by using search querys and categories. While searching, the games will automatically be loaded into the page. 
+New games can also be loaded dynamically by scrolling the page (if the store contains that many games). A player can view his own games in 'My Games' view. 
+Player is capable of buying a new game using the payment system provided by the course’s mockup payment service. This feature should be secure since 
+the payment service uses checksums to validate the posted data and on our server checksum is also validated. The most difficult part was to make sure 
+this functionality is secure and that it can’t be misused.
+
+#### Basic developer functionalities: 
+
+Developer can add games and manage his own games. When developer is trying to add new game or modify one, our implemented functions check that 
+the data posted by the developer to our server is valid and that it doesn’t for example cause any constraint violations to our database. 
+It was straightforward to implement this data validation using Django’s Forms but problems arose when user tried to set game’s name to one that 
+already existed and after this trying to return a view so that the user experience wouldn’t suffer. Developers are also capable of checking their 
+sale statistics from the manage view and the security restrictions including that developer can only modify his own games are also implemented. 
+As we have implemented every required feature from we would give ourselves the maximum points this category.
+
+#### RESTful API:
+
+As an extra feature, we have also implemented an REST api to offer highscores, information about available games and 
+sales statistics and it is implemented using Django REST Framework. Access to these sales statistics requires Developer 
+account and this api uses Tokens to authenticate the GET request. Tokens are only distributed to Developers and the token has 
+to be included in the headers of the GET request so no normal user can access information about developer’s sales statistics. 
+There were no problems implementing this feature and we were hoping to get the maximum points from this feature.  
+
+
+#### Mobile Friendly:
+The website was made mobile and tablet friendly by cleverly using the CSS-library Bootstrap and its features. 
+The page will scale itself according to the size of the window use. Mobile friendliness has also been kept in mind 
+when positioning items and in general design.
+
+#### Game/service interaction
+The complete set of game-service interaction features was implemented for the site. This includes saving and loading the game state data,
+which is done using ajax from the server. High score list is updated locally to minimize latency, but the updates are also propagated to
+the server database. The site will inform the game if any of the operations fail or are invalid.
+
+#### Social media sharing
+Games can be shares on Facebook. The share will include the game's image, title and description.
+
+#### 3rd party login
+Login using Facebook account was enabled by using Python Social Auth modules social-core and social-app-django.
+
+#### Authentication
+In addition to Facebook login, the user can also register a account directly to the site. The use of Django Auth features
+should guarantee the robustness of the system.
+
+#### Quality of work:
+
+When implementing this project our goal has been to write quality code and use the model-view-template structure, 
+although in some cases it has not been easy to follow DRY policy, for example when parsing posted data. 
+We have commented our code and ensured with automatic tests and manual tests functionality and security of our main functions. 
+We have tried to make the user experience as smooth as possible by making a clean UI with multiple smart functionalities like instant search, 
+dynamic page loading and mobile friendliness. Since we have tried to make certain that our work is of high quality, 
+we would like to get the maximum points.   
+
+
+### How to use:
+
+The website is located in https://frozen-stream-39780.herokuapp.com/. The website has developers and players. 
+Player functionalities can be tested by using your Facebook-account or by creating an account by using the register functionality. 
+You can choose whether you want to create a player or a developer. Facebook accounts will automatically be of player-type. 
+A confirmation email is sent to the email you specified if you created your account without Facebook. 
+As the course documentation suggested, this was implemented with Django's Console Backend, so no actual emails are sent.
+
+
+
+

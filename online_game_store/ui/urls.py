@@ -31,6 +31,8 @@ urlpatterns = [
     url(r"^yourgames/$", views.your_games, name='your_games'),
     url(r"^manage/$", views.manage, name='manage_games'),
     url(r"^register/$", views.register, name='register'),
+    url(r"^verifyemail/(?P<userId>\w+)/(?P<token>\w+)$", views.verifyemail, name='verifyemail'),
     url('^', include('django.contrib.auth.urls')),
+    url('', include('social_django.urls', namespace='social')),
     url(r"^$", views.front, name='home'),
 ]

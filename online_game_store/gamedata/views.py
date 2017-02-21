@@ -41,7 +41,7 @@ def games_json(request):
                 a["price"] = i.game.price
                 a["description"] = i.game.description
                 a["id"] = i.game.id
-                a["category"] = i.game.category
+                a["category"] = i.game.get_category_display()
                 p.append(a)
         elif player is not None and search is not None:
             c = get_object_or_404(Player, user__id=int(player)).games.filter(game__name__contains = search)[offset:end]
@@ -54,7 +54,7 @@ def games_json(request):
                     a["price"] = i.game.price
                     a["description"] = i.game.description
                     a["id"] = i.game.id
-                    a["category"] = i.game.category
+                    a["category"] = i.game.get_category_display()
                     p.append(a)
         elif developer is not None and search is None:
             c = get_object_or_404(Developer, user__id=int(developer))
@@ -64,11 +64,12 @@ def games_json(request):
         elif categoryRequested is None and search is None:
             p = Game.objects.all()[offset:end]
         elif categoryRequested is not None and search is None:
-            p = Game.objects.filter(category__exact = categoryRequested)[offset:end]
+            print(Game.categories_reverse[categoryRequested] + '')
+            p = Game.objects.filter(category__exact = Game.categories_reverse[categoryRequested])[offset:end]
         elif categoryRequested is None and search is not None:
             p = Game.objects.filter(name__contains = search)[offset:end]
         else:
-            p = Game.objects.filter(name__contains = search).filter(category__exact = categoryRequested)[offset:end]
+            p = Game.objects.filter(name__contains = search).filter(category__exact = Game.categories_reverse[categoryRequested])[offset:end]
     except Game.DoesNotExist:
         raise Http404("No games found")
     games = []
@@ -88,7 +89,7 @@ def games_json(request):
             c["price"] = i.price
             c["description"] = i.description
             c["id"] = i.id
-            c["category"] = i.category
+            c["category"] = i.get_category_display()
             games.append(c)
         data = json.dumps(games)
 

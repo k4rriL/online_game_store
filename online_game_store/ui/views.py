@@ -1,17 +1,21 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from gamedata.models import Game, Player, GamesOfPlayer, Developer
+from gamedata.models import Game, Player, GamesOfPlayer, Developer, EmailVerificationToken
 from django.contrib.auth.models import User
 from hashlib import md5
 from django.http import *
-from random import randint
+from random import randint, choice
 from django.db.models import F
 from django.db import DatabaseError, transaction
 import time
 from . import forms
 from rest_framework.authtoken.models import Token
-from ui.forms import RegisterForm
+from ui.forms import RegisterForm, AddGameForm
 from django.contrib.auth.forms import UserCreationForm
+from django.core.mail import send_mail
+import string
+import django.urls
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 #Returns the front page of the website
 def front(request):
@@ -97,6 +101,11 @@ def game_info(request, gameId):
             context["checksum"] = checksum
             context["pid"] = pid
             context["sid"] = sid
+
+    #Define some data for the context
+    context["success_url"] = request.META["HTTP_REFERER"] + "games/success?id=" + gameId
+    context["cancel_url"] = request.META["HTTP_REFERER"] + "game/" + gameId
+    context["error_url"] = request.META["HTTP_REFERER"]
     context["owned"] = owned
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
@@ -113,6 +122,13 @@ def game_info(request, gameId):
 
     context["highscores"] = highscores
 
+    gamePath = django.urls.reverse(game_info, kwargs={"gameId":gameId})
+    gameUrl = request.build_absolute_uri(gamePath)
+    context["gameUrl"] = gameUrl
+
+    imgPath = static(game.category + ".jpg")
+    imgUrl = request.build_absolute_uri(imgPath)
+    context["imgUrl"] = imgUrl
     return render(request, "ui/showgame.html", context)
 
 '''
@@ -225,8 +241,21 @@ Game and checks that there is no game with the same name
 '''
 @login_required
 def add_new_game(request):
-    developer = Developer.objects.get(user=request.user)
     context = {}
+    developerUser = None
+    playerUser = None
+    if request.user.is_authenticated():
+        try:
+            playerUser = Player.objects.get(user=request.user)
+        except Player.DoesNotExist:
+            print("player does not exist")
+        try:
+            developerUser = Developer.objects.get(user=request.user)
+        except Developer.DoesNotExist:
+            print("developer does not exist")
+    context["playerUser"] = playerUser
+    context["developerUser"] = developerUser
+    developer = Developer.objects.get(user=request.user)
 
     #Check if method is post
     if request.method == "POST":
@@ -237,11 +266,10 @@ def add_new_game(request):
 
             #Get infromation from the post request
             name = request.POST["name"]
-            url = request.POST["url"]
+            url = request.POST["address"]
             description = request.POST["description"]
             price = float(request.POST["price"])
             category = request.POST["category"]
-
             #Check that there are no games with same id and name
             if Game.objects.filter(name=name).count() == 0:
                 new_game = Game.objects.create(name=name, address=url, description=description, price=price, purchaseCount=0, developer=developer, category=category)
@@ -251,7 +279,7 @@ def add_new_game(request):
             #--> return the form filled with old parameters
             else:
                 context["name"] = name
-                context["url"] = url
+                context["address"] = url
                 context["description"] = description
                 context["price"] = price
                 context["name_error"] = "Sorry, this name is already in use"
@@ -262,6 +290,7 @@ def add_new_game(request):
 
     #if the request method wasn't post, return the form view
     else:
+        context["form"] = AddGameForm()
         return render(request, "ui/addgame.html", context)
 
     return HttpResponseRedirect("/manage")
@@ -301,24 +330,6 @@ def modify(request, gameId):
     #logged in developer owns it
     game = Game.objects.filter(id=gameId).filter(developer=developerUser)
     if game.count() > 0:
-
-        '''
-        game = Game.objects.get(id=gameId)
-        games = GamesOfPlayer.objects.filter(game=game)
-        highscores = []
-
-        #Get the highscores of a game so that they can be displayed
-        #in the same view.
-        for i in games:
-            c = {}
-            c["score"] = i.highscore
-            c["name"] = i.user.user.first_name
-            highscores.append(c)
-
-        context["highscores"] = highscores
-        context["game"] =  game
-        context["games"] = games
-        '''
         game = Game.objects.get(id=gameId)
         context = get_highscores_and_game_for_context(context, game)
         context["name"] = game.name
@@ -485,6 +496,21 @@ def get_highscores_and_game_for_context(context, game):
 
     return context
 
+#email verification confirmation
+def verifyemail(request, userId, token):
+    try:
+        v = EmailVerificationToken.objects.get(user=userId, token=token)
+    except EmailVerificationToken.DoesNotExist:
+        return HttpResponseBadRequest()
+    try:
+        u = User.objects.get(pk=userId)
+    except User.DoesNotExist:
+        return HttpResponseBadRequest()
+    u.is_active = True
+    u.save()
+    v.delete()
+    return render(request, "ui/message.html", {"message": "Email verification successfull, now log in" })
+
 #register new user to site
 def register(request):
     context = {}
@@ -495,21 +521,36 @@ def register(request):
                 # start transaction
                 with transaction.atomic():
                     user = register_form.save()
-                    # TODO: disable user because email not yet verified
-                    #user.is_active = False
+                    # disable user until email is verified
+                    user.is_active = False
                     user.save()
                     if register_form.cleaned_data['usertype'] == 'developer':
                         usertype = Developer(user=user)
                     else:
                         usertype = Player(user=user)
                     usertype.save()
+                    # generate email verification
+                    token = ''.join(choice(string.ascii_letters + string.digits) for i in range(32))
+                    EmailVerificationToken(user=user, token=token).save()
+                    path = django.urls.reverse(verifyemail, kwargs={"userId": str(user.pk), "token":token})
+                    targetUrl = request.scheme + "://" + request.get_host() + path
+                    hostname = request.get_host().split(":")[0]
+                    send_mail(
+                        'Online Game Store Email verification',
+                        'Click on the following link to verify your email to the service ' +
+                            '<a href="' + targetUrl + '">' + targetUrl + '</a>',
+                        'noreply@'+hostname,
+                        [user.email],
+                        fail_silently=False,
+                    )
+
                     # end of transaction, errors can be simulated with:
                     # raise DatabaseError
             except DatabaseError:
                 register_form.add_error(None, "Database error, please try again")
                 context["form"] = register_form
                 return render(request, "registration/register.html", context)
-            return redirect("home")
+            return render(request, "ui/message.html", {"message": "Email verification was sent to " + user.email })
     else: # show empty form
         register_form = RegisterForm()
     context["form"] = register_form

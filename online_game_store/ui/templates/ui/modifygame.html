@@ -5,7 +5,8 @@
 
 {% block header %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}?v=<?=time();?">
+<link rel="stylesheet" type="text/css" href="{% static 'info.css' %}?v=<?=time();?">
 {% endblock %}
 
 {% block content %}
@@ -33,38 +34,39 @@
   </div>
   <div class="row">
     <div class="col-md-4 col-sm-6 col-xs-8">
-      <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
+      <img src="{{baseUrl}}{{game.get_category_display}}.jpg" class="img-responsive" alt="">
     </div>
     <div class="col-md-4 col-sm-7 col-xs-9">
       <h2 class="game-price">{{ game.price }} EUR</h2>
-      <h4 class="game-category">Category: {{ game.category }} </h4>
+      <h4 class="game-category">Category: {{ game.get_category_display }} </h4>
       <h4 class="game-divider">Game description</h4>
-      <hr class="description-line"></hr>
+      <hr class="divider-line"></hr>
       <p class="game-description">{{ game.description }}</p>
     </div>
   </div>
   {% else %}
   <div class="row">
     <div class="col-md-4 col-sm-6 col-xs-8">
-      <img src="{{baseUrl}}{{game.category}}.jpg" class="img-responsive" alt="">
+      <img src="{{baseUrl}}{{game.get_category_display}}.jpg" class="img-responsive" alt="">
     </div>
     <div class="col-md-4 col-sm-7 col-xs-9">
-      <form action="/modifygame/" method="POST" role="form" id="modificationform" class="form-horizontal">{% csrf_token %}
+      <form action="/modifygame/" method="POST" id="modificationform" class="form-horizontal">{% csrf_token %}
         <div class="form-group"><br>
           <label for="name"> Name of the game</label>
-          <input type="text" name="name" value="{{ name }}" placeholder="{{ name_error }}" class="form-control" required/>
+          <input type="text" name="name" id="name" value="{{ name }}" placeholder="{{ name_error }}" class="form-control" required/>
         </div>
         <div class="form-group">
           <label for="url">URL</label>
-          <input type="url" name="url" value="{{ game.address }}" class="form-control" required/>
+          <input type="url" name="url" id="url" value="{{ game.address }}" class="form-control" required/>
         </div>
         <div class="form-group">
           <label for="price">Price</label>
-          <input type="number" step="0.01" name="price" value="{{ game.price }}" min="0" class="form-control" required/>
+          <input type="number" step="0.01" name="price" id="price" value="{{ game.price }}" min="0" class="form-control" required/>
         </div>
         <div class="form-group">
           <label for="category">Category</label>
-          <select name="category" class="form-control" required>
+          <select name="category" id="category" class="form-control" required size=1>
+            <option value="">Choose a category</option>
             <option>Action</option>
             <option>Adventure</option>
             <option>Casual</option>
@@ -77,25 +79,25 @@
         </div>
         <div class="form-group">
           <label for="description">Description</label>
-          <textarea name="description" rows=4 class="form-control" required>{{ game.description }}</textarea>
+          <textarea name="description" id="description" rows=4 class="form-control" required>{{ game.description }}</textarea>
         </div>
         <div class="form-group">
-          <input type="hidden" name="gameid" value="{{ game.id }}" class="form-control" required/>
+          <input type="hidden" name="gameid" value="{{ game.id }}" class="form-control" />
         </div>
         <input type="submit" id="submitgame" class="btn btn-info save-button" value="Save"/>
       </form>
-      <form action="/deletegame/" method="POST" role="form" id="deleteform" class="form-horizontal">{% csrf_token %}
+      <form action="/deletegame/" method="POST" id="deleteform" class="form-horizontal">{% csrf_token %}
         <input type="hidden" name="gameid" value= "{{ game.id }}" />
         <input type="submit" value="Delete game" class="btn btn-danger delete-button">
       </form>
     </div>
     <div class="col-md-3 col-sm-6 col-xs-8">
       <h1>Highscores</h1>
-      <hr class="description-line"></hr>
+      <hr class="divider-line"/>
       <table class="highscores-table">
         {% for i in highscores %}
           <tr>
-            <td>{{i.name}}</td><td>{{i.score}}</td>
+            <td class="td-left">{{i.name}}</td><td class="td-right">{{i.score}}</td>
           </tr>
         {%endfor%}
       </table>

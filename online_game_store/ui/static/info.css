@@ -1,0 +1,138 @@
+/* End basic card view styles*/
+
+.title-div{
+  background-color: #484848;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -10px;
+}
+
+.title-div .game-title{
+  text-transform: uppercase;
+  padding-left: 15px;
+  color: white;
+  float:left;
+}
+
+.title-div p {
+  margin-top:25px;
+}
+
+.game-info img{
+  margin: 10px;
+}
+
+.game-info iframe{
+  width: 100%;
+  min-height: 500px;
+  border: 0px;
+}
+
+.game-info .game-iframe{
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #aaaaaa;
+  border-radius: 2px;
+}
+
+.game-info .game-price{
+  font-size: x-large;
+  padding: 10px;
+  float: left;
+}
+
+.game-info .game-purchase{
+  padding: 10px;
+  float: left;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.game-info .game-purchase-developer{
+  padding: 10px;
+  float: left;
+  margin-top: 22px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.game-info .game-category{
+  padding: 10px;
+  clear:both;
+}
+
+.game-info .game-divider{
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.game-info .divider-line{
+  margin: 0px;
+  border-top: 1px solid #aaaaaa;
+}
+
+.game-info .game-description{
+  padding: 10px;
+}
+
+.game-info .highscores-table{
+  margin-left: 5px;
+  text-transform: capitalize;
+}
+
+.game-info .td-left{
+  border-right: 1px solid #aaaaaa;
+  padding-right: 5px;
+}
+
+.game-info .td-right {
+  padding-left:5px;
+}
+
+.game-info .form-horizontal {
+    margin-left: 20px;
+}
+
+.game-info .save-button{
+  float:left;
+}
+
+.game-info .delete-button{
+  float:left;
+  margin-left: 15px;
+}
+
+.game-info .purchases {
+  padding: 15px;
+}
+
+.game-info .fb-share-button {
+  float:right;
+  transform: scale(2);
+  transform-origin: top right;
+}
+
+.purchases-table .tr-top{
+  border-bottom: 1px solid #aaaaaa;
+}
+
+.purchases-table td{
+  padding: 5px;
+}
+
+.add-game-table td{
+  padding: 10px;
+}
+
+.add-game-table{
+  margin-bottom:10px;
+}
+
+.add-game .form-horizontal {
+  margin-left: 30px;
+}

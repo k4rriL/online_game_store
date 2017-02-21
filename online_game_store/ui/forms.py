@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import ModelForm
+from gamedata.models import Game
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -11,26 +13,11 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ('username', 'email')
 
-#Form for checking that the posted
-#data is valid, used when adding a new game
-class AddGameForm(forms.Form):
-    name = forms.CharField(label="name")
-    url = forms.URLField(label="url")
-    description = forms.CharField()
-    price = forms.FloatField()
-
-    CATEGORIES = (
-        ('Sports', 'SPO'),
-        ('Racing', 'RAC'),
-        ('RPG', 'RPG'),
-        ( 'Action', 'ACT'),
-        ( 'Adventure', 'ADV'),
-        ( 'Casual', 'CAS'),
-        ( 'Strategy', 'STR'),
-        ('Other', 'OTH')
-    )
-
-    category = forms.ChoiceField(choices=CATEGORIES)
+#Form for adding a new game
+class AddGameForm(ModelForm):
+    class Meta:
+        model = Game
+        exclude = ['developer', 'purchaseCount']
 
 
 #Form for checking that the data is valid

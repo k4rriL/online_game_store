@@ -16,19 +16,30 @@ class Game(models.Model):
     price = models.FloatField()
     purchaseCount = models.PositiveIntegerField()
     developer = models.ForeignKey('Developer', related_name='games')
-
+    ACTION = 'ACT'
+    ADVENTURE = 'ADV'
+    CASUAL = 'CAS'
+    RACING = 'RAC'
+    RPG = 'RPG'
+    SPORTS = 'SPO'
+    STRATEGY = 'STR'
+    OTHER = 'OTH'
+    
+    
     CATEGORIES = (
-        ('SPO', 'Sports'),
-        ('RAC', 'Racing'),
-        ('RPG', 'RPG'),
-        ('ACT', 'Action'),
-        ('ADV', 'Adventure'),
-        ('CAS', 'Casual'),
-        ('STR', 'Strategy'),
-        ('OTH', 'Other')
+        (ACTION, 'Action'),
+        (ADVENTURE, 'Adventure'),
+        (CASUAL, 'Casual'),
+        (RACING, 'Racing'),
+        (RPG, 'RPG'),
+        (SPORTS, 'Sports'),
+        (STRATEGY, 'Strategy'),
+        (OTHER, 'Other')
     )
+    
+    categories_reverse = dict((v, k) for k, v in CATEGORIES)
 
-    category = models.CharField(max_length = 3, choices = CATEGORIES)
+    category = models.CharField(max_length = 3, choices = CATEGORIES, default=ACTION,)
     class Meta:
         ordering = ("-purchaseCount",)
 
@@ -50,6 +61,11 @@ class GamesOfPlayer(models.Model):
 
     class Meta:
         ordering = ("-highscore",)
+
+#Model for storing email verification tokens
+class EmailVerificationToken(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE, unique=True)
+    token = models.CharField(max_length = 32)
 
 #Function for creating authentication token for users
 #automatically when new user is created

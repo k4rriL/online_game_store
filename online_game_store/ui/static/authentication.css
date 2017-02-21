@@ -1,0 +1,40 @@
+.register-form  td {
+  padding: 10px;
+}
+
+.register-table ul label {
+  margin:0px;
+}
+
+.register-table #id_username {
+  margin-top:10px;
+}
+
+.register-table #id_usertype + br {
+  display:none;
+}
+
+.register .facebook {
+  margin-left: 30px;
+  padding-left: 0px;
+}
+
+.register #id_password2 {
+  margin-top: 10px;
+}
+
+.login .form-horizontal {
+  margin-left: 30px;
+}
+
+.login-table td {
+  padding: 10px;
+}
+
+.login .facebook {
+  margin-left: 15px;
+}
+
+.login-table, .register-table{
+  margin-bottom:10px;
+}
