@@ -268,7 +268,7 @@ def add_new_game(request):
 
             #Get infromation from the post request
             name = request.POST["name"]
-            url = request.POST["address"]
+            url = request.POST["url"]
             description = request.POST["description"]
             price = float(request.POST["price"])
             category = request.POST["category"]
@@ -281,7 +281,7 @@ def add_new_game(request):
             #--> return the form filled with old parameters
             else:
                 context["name"] = name
-                context["address"] = url
+                context["url"] = url
                 context["description"] = description
                 context["price"] = price
                 context["name_error"] = "Sorry, this name is already in use"
