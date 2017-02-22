@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath online_game_store online_game_store.wsgi --log-file -
+web: gunicorn online_game_store.wsgi --log-file -
