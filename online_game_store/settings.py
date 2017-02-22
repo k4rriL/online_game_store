@@ -50,6 +50,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'frozen-stream-39780.herokuapp.com']
 
+#Default host is localhost for debugging purposes
+HOST = "http://localhost:8000/"
 
 # Application definition
 
@@ -224,6 +226,8 @@ if "DYNO" in os.environ:
 
     DEBUG = False # False, once service is succesfully deployed
     ALLOWED_HOSTS = ['*']
+    #Change host to heroku
+    HOST = "frozen-stream-39780.herokuapp.com/"
 
 
 REST_FRAMEWORK = {

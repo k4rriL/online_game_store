@@ -16,6 +16,7 @@ from django.core.mail import send_mail
 import string
 import django.urls
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from online_game_store import settings
 
 #Returns the front page of the website
 def front(request):
@@ -103,9 +104,10 @@ def game_info(request, gameId):
             context["sid"] = sid
 
     #Define some data for the context
-    context["success_url"] = request.META["HTTP_REFERER"] + "games/success?id=" + gameId
-    context["cancel_url"] = request.META["HTTP_REFERER"] + "game/" + gameId
-    context["error_url"] = request.META["HTTP_REFERER"]
+    host = settings.HOST
+    context["success_url"] = host + "games/success?id=" + gameId
+    context["cancel_url"] = host + "game/" + gameId
+    context["error_url"] = host
     context["owned"] = owned
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
