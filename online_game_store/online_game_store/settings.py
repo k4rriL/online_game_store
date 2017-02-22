@@ -12,28 +12,38 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(PROJECT_PATH, 'staticfiles')
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'ui/static'),
+    os.path.join(PROJECT_PATH, 'ui/static'),
 )
+
+SECURE_BROWSER_XSS_FILTER = True
+
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_SECURE = True
+
+CSRF_COOKIE_HTTPONLY = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=)z%b&5yx-3o$%sj^_)eo-%@^r$wh@#48dym__6w%v-8j9jk_)'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'frozen-stream-39780.herokuapp.com']
 
 
 # Application definition
@@ -202,6 +212,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # Only when running in Heroku
 if "DYNO" in os.environ:

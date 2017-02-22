@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath online_game_store online_game_store.wsgi --log-file -
+web: python my_django_app/manage.py collectstatic --noinput; gunicorn --pythonpath online_game_store online_game_store.wsgi --log-file -

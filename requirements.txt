@@ -8,3 +8,5 @@ static3==0.5.1
 djangorestframework==3.5.3
 social-auth-core==1.2.0
 social-auth-app-django==1.1.0
+whitenoise==3.3.0
+
