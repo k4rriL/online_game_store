@@ -17,23 +17,12 @@ body {
   margin-bottom: 10px;
 }
 
-$animation-duration: .2s;
-
 h1, h2, h3, h4, h5, h6 {
 	text-transform: uppercase;
-  text-align: center;
 }
 
 a {
 	text-decoration: none;
-}
-
-a:hover, a:focus {
-	color: darken($color, 15%);
-}
-
-a:active {
-	color: darken($color, 30%);
 }
 
 main {

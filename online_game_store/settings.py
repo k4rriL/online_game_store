@@ -35,7 +35,7 @@ SECURE_BROWSER_XSS_FILTER = True
 
 SESSION_COOKIE_SECURE = True
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
 
 CSRF_COOKIE_HTTPONLY = True
 
@@ -52,6 +52,44 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'frozen-stream-39780.herokua
 
 #Default host is localhost for debugging purposes
 HOST = "http://localhost:8000/"
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '[contactor] %(levelname)s %(asctime)s %(message)s'
+        },
+    },
+    'handlers': {
+        # Send all messages to console
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+        # Warning messages are sent to admin emails
+        'mail_admins': {
+            'level': 'WARNING',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
+        },
+    'loggers': {
+        # This is the "catch all" logger
+        '': {
+            'handlers': ['console',],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    }
+}
+
 
 # Application definition
 

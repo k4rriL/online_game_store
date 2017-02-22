@@ -73,7 +73,7 @@
                 //Create the HTML to add to the web page
                 var compile_data;
                 {% if developer != None %}
-                  compile_data ='<div class="col-md-3 col-sm-4 col-xs-6 card-container"> <div class="card"> ' +
+                  compile_data ='<div class="col-md-3 col-sm-4 col-xs-7 card-container"> <div class="card"> ' +
                     '<a href="/modify/' + data[i].id + '"><span class=card-link></span></a>' +
                     '<div class="card-image"> <img class="img-responsive" src="{{baseUrl}}'+ data[i].category + '.jpg">' +
                     '<span class="game-title">' + name + '</span></div>' +
@@ -81,7 +81,7 @@
                     '</div><div class="game-category">' + data[i].category +
                     '</div><div class="game-price">' + data[i].price + '€</div></div></div>';
                 {% else %}
-                  compile_data ='<div class="col-md-3 col-sm-4 col-xs-6 card-container"> <div class="card"> ' +
+                  compile_data ='<div class="col-md-3 col-sm-4 col-xs-7 card-container"> <div class="card"> ' +
                     '<a href="/game/' + data[i].id + '"><span class=card-link></span></a>' +
                     '<div class="card-image"> <img class="img-responsive" src="{{baseUrl}}'+ data[i].category + '.jpg">' +
                     '<span class="game-title">' + name + '</span></div>' +
