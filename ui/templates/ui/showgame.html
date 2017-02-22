@@ -166,7 +166,7 @@ function receiveGameMsg (event)
     {% if owned %}
       <div class="row">
         <div class="col-md-8 col-sm-12 col-xs-16 game-iframe">
-          <iframe id="gameFrame" src=" https://www.google.com/search?q=%{{game.address}}&btnI=Im+Feeling+Lucky"></iframe>
+          <iframe id="gameFrame" src="{{game.address}}"></iframe>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-8">
           <h1>Highscores</h1>
