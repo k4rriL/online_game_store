@@ -33,7 +33,7 @@ SECRET_KEY = '=)z%b&5yx-3o$%sj^_)eo-%@^r$wh@#48dym__6w%v-8j9jk_)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['frozen-stream-39780.herokuapp.com', 'localhost']
 
 
 # Application definition
