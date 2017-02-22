@@ -128,7 +128,7 @@ def game_info(request, gameId):
     gameUrl = request.build_absolute_uri(gamePath)
     context["gameUrl"] = gameUrl
 
-    imgPath = static(game.category + ".jpg")
+    imgPath = static(game.get_category_display + ".jpg")
     imgUrl = request.build_absolute_uri(imgPath)
     context["imgUrl"] = imgUrl
     return render(request, "ui/showgame.html", context)
