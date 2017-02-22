@@ -10,7 +10,7 @@ from django.db import DatabaseError, transaction
 import time
 from . import forms
 from rest_framework.authtoken.models import Token
-from ui.forms import RegisterForm, AddGameForm, TestForm
+from ui.forms import RegisterForm, AddGameForm
 from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import send_mail
 import string
@@ -288,8 +288,6 @@ def add_new_game(request):
                 return render(request, "ui/addgame.html", context)
 
         else:
-            myform = forms.TestForm(request.POST["address"])
-            print(myform.is_valid())
             print("failed to validate")
 
     #if the request method wasn't post, return the form view
