@@ -31,7 +31,7 @@ STATICFILES_DIRS = (
 SECRET_KEY = '=)z%b&5yx-3o$%sj^_)eo-%@^r$wh@#48dym__6w%v-8j9jk_)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -121,7 +121,7 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    'fields': 'id,name,email', 
+    'fields': 'id,name,email',
 }
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
