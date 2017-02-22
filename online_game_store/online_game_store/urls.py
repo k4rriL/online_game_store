@@ -22,4 +22,4 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('gamedata.urls')),
     url(r'^', include('ui.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
