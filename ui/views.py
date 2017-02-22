@@ -17,6 +17,7 @@ import string
 import django.urls
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from online_game_store import settings
+from django.urls import reverse
 
 #Returns the front page of the website
 def front(request):
@@ -104,10 +105,9 @@ def game_info(request, gameId):
             context["sid"] = sid
 
     #Define some data for the context
-    host = settings.HOST
-    context["success_url"] = host + "games/success?id=" + gameId
-    context["cancel_url"] = host + "game/" + gameId
-    context["error_url"] = host
+    context["success_url"] = request.build_absolute_uri(reverse("success")) + "?id=" + gameId
+    context["cancel_url"] = request.build_absolute_uri(reverse("game", kwargs={"gameId":gameId}))
+    context["error_url"] = request.build_absolute_uri(reverse("home"))
     context["owned"] = owned
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser

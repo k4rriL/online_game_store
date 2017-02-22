@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from gamedata.models import Game
+from gamedata.models import Game, URLFieldForHTTPS
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -17,7 +17,7 @@ class RegisterForm(UserCreationForm):
 class AddGameForm(forms.Form):
 
     name = forms.CharField(label="name")
-    url = forms.URLField(label="url")
+    #url = forms.URLField(label="url", initial="https://")
     description = forms.CharField()
     price = forms.FloatField()
 
@@ -33,6 +33,9 @@ class AddGameForm(forms.Form):
     )
 
     category = forms.ChoiceField(choices=CATEGORIES)
+
+    class Meta:
+        url = URLFieldForHTTPS
 
 #Form for checking that the data is valid
 #when the confirmation from the payment service
