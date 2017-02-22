@@ -33,7 +33,7 @@ SECRET_KEY = '=)z%b&5yx-3o$%sj^_)eo-%@^r$wh@#48dym__6w%v-8j9jk_)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['frozen-stream-39780.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '*']
 
 
 # Application definition
@@ -209,7 +209,7 @@ if "DYNO" in os.environ:
     import dj_database_url
     DATABASES['default'] =  dj_database_url.config()
 
-    DEBUG = True # False, once service is succesfully deployed
+    DEBUG = False # False, once service is succesfully deployed
     ALLOWED_HOSTS = ['*']
 
 
