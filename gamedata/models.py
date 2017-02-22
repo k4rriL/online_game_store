@@ -4,6 +4,11 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
+from django.core.validators import URLValidator
+
+class URLFieldForHTTPS(models.URLField):
+  '''URL field that accepts URLs that start with https:// only.'''
+  default_validators = [URLValidator(schemes=['https'])]
 
 '''
 This model represents a single game
@@ -11,7 +16,7 @@ developer field is a reference to Developer object
 '''
 class Game(models.Model):
     name = models.CharField(max_length = 100, unique = True)
-    address = models.URLField()
+    address = URLFieldForHTTPS()
     description = models.TextField()
     price = models.FloatField()
     purchaseCount = models.PositiveIntegerField()
@@ -24,8 +29,8 @@ class Game(models.Model):
     SPORTS = 'SPO'
     STRATEGY = 'STR'
     OTHER = 'OTH'
-    
-    
+
+
     CATEGORIES = (
         (ACTION, 'Action'),
         (ADVENTURE, 'Adventure'),
@@ -36,7 +41,7 @@ class Game(models.Model):
         (STRATEGY, 'Strategy'),
         (OTHER, 'Other')
     )
-    
+
     categories_reverse = dict((v, k) for k, v in CATEGORIES)
 
     category = models.CharField(max_length = 3, choices = CATEGORIES, default=ACTION,)
