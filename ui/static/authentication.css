@@ -17,10 +17,15 @@
 .register .facebook {
   margin-left: 30px;
   padding-left: 0px;
+  float:left;
 }
 
 .register #id_password2 {
   margin-top: 10px;
+}
+
+.register .register-button {
+  float:left;
 }
 
 .login .form-horizontal {
