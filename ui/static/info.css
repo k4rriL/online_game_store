@@ -97,7 +97,7 @@
 }
 
 .game-info .form-horizontal {
-    margin-left: 20px;
+    margin-left: 30px;
 }
 
 .game-info .save-button{
@@ -127,14 +127,16 @@
   padding: 5px;
 }
 
-.add-game-table td{
-  padding: 10px;
+#gameform .form-group{
+  margin-right: 10px;
+  margin-bottom: 0px;
 }
 
-.add-game-table{
+#gameform{
+  margin-top:10px;
   margin-bottom:10px;
 }
 
-.add-game .form-horizontal {
-  margin-left: 30px;
+#gameform input, #gameform label, #gameform textarea, #gameform select {
+  margin-top:5px;
 }

@@ -271,7 +271,7 @@ def add_new_game(request):
             url = request.POST["url"]
             description = request.POST["description"]
             price = float(request.POST["price"])
-            category = request.POST["category"]
+            category = Game.categories_reverse[str(request.POST["category"])]
             #Check that there are no games with same id and name
             if Game.objects.filter(name=name).count() == 0:
                 new_game = Game.objects.create(name=name, address=url, description=description, price=price, purchaseCount=0, developer=developer, category=category)
@@ -369,7 +369,7 @@ def modify_game(request):
                 description = request.POST["description"]
                 price = request.POST["price"]
                 name = request.POST["name"]
-                category = request.POST["category"]
+                category = Game.categories_reverse[str(request.POST["category"])]
                 address = request.POST["url"]
 
                 nameCount = Game.objects.filter(name=name).count()
