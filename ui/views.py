@@ -91,7 +91,7 @@ def game_info(request, gameId):
                     owned = True
 
             #Define some parameters for the form
-            pid = str(game.id) + player.user.username.replace(" ", "")
+            pid = str(game.id) + player.user.username
             sid = "OnlineGameStore"
             token = "5fa6f9b7ea1628e4d373b4003bce9eb5"
             amount = game.price
@@ -203,6 +203,7 @@ def game_purchase_success(request):
     form = forms.SuccessfulPaymentForm(request.GET)
     if form.is_valid():
 
+        print(request)
         #Get necessary parameters from request
         pid = request.GET["pid"]
         game_id = request.GET["id"]
@@ -210,9 +211,15 @@ def game_purchase_success(request):
         result = request.GET["result"]
         checksum = request.GET["checksum"]
         secret_key = "5fa6f9b7ea1628e4d373b4003bce9eb5"
+        username_from_pid = get_username_from_pid(game_id, pid)
 
         game = get_object_or_404(Game, id=game_id)
         player = get_object_or_404(Player, user=request.user)
+
+        #check that the logged in player is also
+        #the one who bought the game
+        if player.user.username != username_from_pid:
+            return HttpResponseRedirect("/")
 
         checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
         #calculate the checksum
@@ -424,11 +431,13 @@ also delete their games.
 @login_required
 def delete_game(request):
 
+    player, developer = get_profiles(request)
     if request.method == "POST" and "gameid" in request.POST:
 
-        #Check that the game exists
+        #Check that the game exists and that the user is
+        #authorized to delete this game
         gameId = request.POST["gameid"]
-        if Game.objects.filter(id=gameId).count() > 0:
+        if Game.objects.filter(id=gameId).filter(developer=developer).count() > 0 :
             game = Game.objects.get(id=gameId)
             game.delete()
 
@@ -580,9 +589,34 @@ def register(request):
     return render(request, "registration/register.html", context)
 
 
+#Function for checking that https is used
 def url_is_https(url):
 
     if url[0:8] == "https://":
         return True
     else:
         return False
+
+
+#Function for getting the player/developer
+#from the request
+def get_profiles(request):
+
+    developerUser = None
+    playerUser = None
+    try:
+        playerUser = Player.objects.get(user=request.user)
+    except Player.DoesNotExist:
+        print("player does not exist")
+    try:
+        developerUser = Developer.objects.get(user=request.user)
+    except Developer.DoesNotExist:
+        print("developer does not exist")
+
+    return playerUser, developerUser
+
+
+#Small function for parsing pid 
+def get_username_from_pid(game_id, pid):
+    length = len(str(game_id))
+    return pid[length:len(pid)]
