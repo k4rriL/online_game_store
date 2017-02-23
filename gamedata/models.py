@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.core.validators import URLValidator
 
+
 class URLFieldForHTTPS(models.URLField):
   '''URL field that accepts URLs that start with https:// only.'''
   default_validators = [URLValidator(schemes=['https'])]
@@ -47,6 +48,7 @@ class Game(models.Model):
     category = models.CharField(max_length = 3, choices = CATEGORIES, default=ACTION,)
     class Meta:
         ordering = ("-purchaseCount",)
+
 
 #Model 'extended' from user that represents a user that can buy games
 class Player(models.Model):

@@ -17,7 +17,6 @@ class RegisterForm(UserCreationForm):
 class AddGameForm(forms.Form):
 
     name = forms.CharField(label="name")
-    #url = forms.URLField(label="url", initial="https://")
     description = forms.CharField()
     price = forms.FloatField()
 
