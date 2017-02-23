@@ -48,7 +48,7 @@ class GameDataViewTests(TestCase):
         self.assertEqual(as_json[0]["id"], game2.id)
 
         #Check if setting category parameter works
-        response = client.get("/api/games/", {"category":"SPO"})
+        response = client.get("/api/games/", {"category":"Sports"})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 1)
@@ -71,7 +71,7 @@ class GameDataViewTests(TestCase):
         self.assertEqual(as_json[2]["id"], game4.id)
 
         #Check category and query parameters together
-        response = client.get("/api/games/", {"q":"a", "category":"CAS"})
+        response = client.get("/api/games/", {"q":"a", "category":"Casual"})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 1)

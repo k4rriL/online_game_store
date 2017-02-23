@@ -17,7 +17,7 @@ developer field is a reference to Developer object
 '''
 class Game(models.Model):
     name = models.CharField(max_length = 100, unique = True)
-    address = URLFieldForHTTPS()
+    address = models.URLField()
     description = models.TextField()
     price = models.FloatField()
     purchaseCount = models.PositiveIntegerField()

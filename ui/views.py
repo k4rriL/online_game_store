@@ -272,19 +272,29 @@ def add_new_game(request):
             description = request.POST["description"]
             price = float(request.POST["price"])
             category = Game.categories_reverse[str(request.POST["category"])]
-            #Check that there are no games with same id and name
-            if Game.objects.filter(name=name).count() == 0:
+
+            #Check that there are no games with same name and that https is used
+            if Game.objects.filter(name=name).count() == 0 and url_is_https(url):
                 new_game = Game.objects.create(name=name, address=url, description=description, price=price, purchaseCount=0, developer=developer, category=category)
                 new_game.save()
 
-            #Else there is already a game with a same name
-            #--> return the form filled with old parameters
-            else:
-                context["name"] = name
+            #some problems with input, check if https
+            #is though used. Return to addgame view
+            elif url_is_https(url):
                 context["url"] = url
                 context["description"] = description
                 context["price"] = price
                 context["name_error"] = "Sorry, this name is already in use"
+                return render(request, "ui/addgame.html", context)
+
+            #Else there is already a game with a same name and/or
+            #an invalid url was given.
+            #--> return the form filled with old parameters
+            else:
+                context["name"] = name
+                context["url_error"] = "You have to use HTTPS"
+                context["description"] = description
+                context["price"] = price
                 return render(request, "ui/addgame.html", context)
 
         else:
@@ -335,6 +345,7 @@ def modify(request, gameId):
         game = Game.objects.get(id=gameId)
         context = get_highscores_and_game_for_context(context, game)
         context["name"] = game.name
+        context["url"] = game.address
 
         return render(request, "ui/modifygame.html", context)
 
@@ -370,28 +381,38 @@ def modify_game(request):
                 price = request.POST["price"]
                 name = request.POST["name"]
                 category = Game.categories_reverse[str(request.POST["category"])]
-                address = request.POST["url"]
+                url = request.POST["url"]
 
                 nameCount = Game.objects.filter(name=name).count()
                 game.description = description
                 game.price = price
                 game.category = category
-                game.address = address
+                game.address = url
 
-                #Check that if the developer changed the name
-                #or there is no game that has the same name
-                #as the new name
-                if name == game.name or nameCount == 0:
+                #Check whether the developer changed the name
+                #or that there is no game that has the same name
+                #as the new name. Also check that the https is used
+                if (name == game.name or nameCount == 0) and url_is_https(url):
                     game.name = name
+                    game.address = url
                     game.save(update_fields=["description", "price", "name", "category", "address"])
+
+                #some problems with input, check if url is correct
+                #and return to modifygame view, also set the context right
+                elif url_is_https(url):
+                    context = {}
+                    context = get_highscores_and_game_for_context(context, game)
+                    context["name_error"] = "Sorry, this name is already in use"
+                    context["url"] = url
+                    return render(request, "ui/modifygame.html", context)
 
                 #Else return to the modifygame view and set the
                 #context right
                 else:
-                    game.save(update_fields=["description", "price", "category", "address"])
                     context = {}
                     context = get_highscores_and_game_for_context(context, game)
-                    context["name_error"] = "Sorry, this name is already in use"
+                    context["name"] = name
+                    context["url_error"] = "You have to use HTTPS"
                     return render(request, "ui/modifygame.html", context)
 
     return HttpResponseRedirect("/manage/")
@@ -557,3 +578,11 @@ def register(request):
         register_form = RegisterForm()
     context["form"] = register_form
     return render(request, "registration/register.html", context)
+
+
+def url_is_https(url):
+
+    if url[0:8] == "https://":
+        return True
+    else:
+        return False

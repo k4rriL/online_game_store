@@ -174,7 +174,7 @@ class MainViewTests(TestCase):
         self.assertEqual(response.url, "/manage")
         self.assertTrue(Game.objects.filter(name="test").count() == 0)
 
-        response = client.post("/addnewgame/", {"name": "test", "url": "http://yle.fi",
+        response = client.post("/addnewgame/", {"name": "test", "url": "https://yle.fi",
                                                "description": "testing", "price": 1.99,
                                                "category": "Action" })
         #Should return to manage and add the game with correct parameters
@@ -186,7 +186,7 @@ class MainViewTests(TestCase):
                                                "category": "Action" })
         #Should return to addnewgame and not add the new game because it has the same name
         #as the old game
-        self.assertEqual(response.context[-1]["name_error"], "Sorry, this name is already in use")
+        self.assertEqual(response.context[-1]["url_error"], "You have to use HTTPS")
         self.assertTrue(Game.objects.filter(name="test game").count() == 1)
 
 
@@ -306,7 +306,7 @@ class MainViewTests(TestCase):
         self.assertEqual(response.url, "/manage/")
         self.assertTrue(Game.objects.filter(name="test").count() == 1)
 
-        response = client.post("/modifygame/", {"name": "test3", "url": "http://yle.fi",
+        response = client.post("/modifygame/", {"name": "test3", "url": "https://yle.fi",
                                                "description": "testing", "price": 1.99,
                                                "category": "Action", "gameid": str(game.id)})
         #Should return to manage and modify the game with correct parameters
@@ -320,7 +320,7 @@ class MainViewTests(TestCase):
         #Should return to modifygame and not modify the name of
         #the game because it has the same name as this developer's
         #other game
-        self.assertEqual(response.context[-1]["name_error"], "Sorry, this name is already in use")
+        self.assertEqual(response.context[-1]["url_error"], "You have to use HTTPS")
         self.assertEqual(Game.objects.filter(name="test3").count(), 1)
 
 

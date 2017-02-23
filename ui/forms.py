@@ -17,6 +17,7 @@ class RegisterForm(UserCreationForm):
 class AddGameForm(forms.Form):
 
     name = forms.CharField(label="name")
+    url = forms.URLField()
     description = forms.CharField()
     price = forms.FloatField()
 
@@ -33,8 +34,6 @@ class AddGameForm(forms.Form):
 
     category = forms.ChoiceField(choices=CATEGORIES)
 
-    class Meta:
-        url = URLFieldForHTTPS
 
 #Form for checking that the data is valid
 #when the confirmation from the payment service
