@@ -68,7 +68,7 @@ def game_info(request, gameId):
                     owned = True
 
             #Define some parameters for the form
-            pid = str(game.id) + player.user.username
+            pid = str(game.id) + playerUser.user.username
             sid = "OnlineGameStore"
             token = "5fa6f9b7ea1628e4d373b4003bce9eb5"
             amount = game.price
@@ -180,7 +180,6 @@ def game_purchase_success(request):
     form = forms.SuccessfulPaymentForm(request.GET)
     if form.is_valid():
 
-        print(request)
         #Get necessary parameters from request
         pid = request.GET["pid"]
         game_id = request.GET["id"]
@@ -403,15 +402,10 @@ def your_games(request):
     context = {}
     developerUser = None
     playerUser = None
+
     if request.user.is_authenticated():
-        try:
-            playerUser = Player.objects.get(user=request.user)
-        except Player.DoesNotExist:
-            print("player does not exist")
-        try:
-            developerUser = Developer.objects.get(user=request.user)
-        except Developer.DoesNotExist:
-            print("developer does not exist")
+        playerUser, developerUser = get_profiles(request)
+
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
     if developerUser is not None:
@@ -426,15 +420,10 @@ def manage(request):
     context = {}
     developerUser = None
     playerUser = None
+
     if request.user.is_authenticated():
-        try:
-            playerUser = Player.objects.get(user=request.user)
-        except Player.DoesNotExist:
-            print("player does not exist")
-        try:
-            developerUser = Developer.objects.get(user=request.user)
-        except Developer.DoesNotExist:
-            print("developer does not exist")
+        playerUser, developerUser = get_profiles(request)
+
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
     if playerUser is not None:

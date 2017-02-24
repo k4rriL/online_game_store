@@ -18,7 +18,8 @@ class MainViewTests(TestCase):
         #Define some test data
         user_for_dev = User.objects.create_user(username="testdev", password="testpass")
         user_for_player = User.objects.create_user(username="testplayer", password="testpass")
-        developer = Developer.objects.create(user=user_for_dev)
+        token = views.calculate_token(user_for_dev)
+        developer = Developer.objects.create(user=user_for_dev, token=token)
         player = Player.objects.create(user=user_for_player)
         game = Game.objects.create(name="test game", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="SPO")
         client = Client()
@@ -97,7 +98,8 @@ class MainViewTests(TestCase):
         #Define some test data
         user_for_dev = User.objects.create_user(username="testdev", password="testpass")
         user_for_player = User.objects.create_user(username="testplayer", password="testpass")
-        developer = Developer.objects.create(user=user_for_dev)
+        token = views.calculate_token(user_for_dev)
+        developer = Developer.objects.create(user=user_for_dev, token=token)
         player = Player.objects.create(user=user_for_player)
         game = Game.objects.create(name="test game", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="SPO")
 
@@ -142,7 +144,8 @@ class MainViewTests(TestCase):
 
         #Define some test data
         user_for_dev = User.objects.create_user(username="testdev", password="testpass")
-        developer = Developer.objects.create(user=user_for_dev)
+        token = views.calculate_token(user_for_dev)
+        developer = Developer.objects.create(user=user_for_dev, token=token)
         game = Game.objects.create(name="test game", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="SPO")
 
         client = Client()
@@ -195,7 +198,8 @@ class MainViewTests(TestCase):
 
         #Define some test data
         user_for_dev = User.objects.create_user(username="testdev", password="testpass")
-        developer = Developer.objects.create(user=user_for_dev)
+        token = views.calculate_token(user_for_dev)
+        developer = Developer.objects.create(user=user_for_dev, token=token)
         game = Game.objects.create(name="test game", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="SPO")
 
         client = Client()
@@ -231,8 +235,10 @@ class MainViewTests(TestCase):
         user_for_dev = User.objects.create_user(username="testdev", password="testpass")
         user_for_dev2 = User.objects.create_user(username="testdev2", password="testpass")
         user_for_player = User.objects.create_user(username="testplayer", password="testpass")
-        developer = Developer.objects.create(user=user_for_dev)
-        developer2 = Developer.objects.create(user=user_for_dev2)
+        token = views.calculate_token(user_for_dev)
+        developer = Developer.objects.create(user=user_for_dev, token=token)
+        token = views.calculate_token(user_for_dev2)
+        developer2 = Developer.objects.create(user=user_for_dev2, token=token)
         player = Player.objects.create(user=user_for_player)
         game = Game.objects.create(name="test game", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="SPO")
 
@@ -283,7 +289,8 @@ class MainViewTests(TestCase):
 
         #Define some test data
         user_for_dev = User.objects.create_user(username="testdev", password="testpass")
-        developer = Developer.objects.create(user=user_for_dev)
+        token = views.calculate_token(user_for_dev)
+        developer = Developer.objects.create(user=user_for_dev, token=token)
         game = Game.objects.create(name="test", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="SPO")
         game1 = Game.objects.create(name="test2", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="SPO")
 
@@ -328,7 +335,8 @@ class MainViewTests(TestCase):
 
         #Define some test data
         user_for_dev = User.objects.create_user(username="testdev", password="testpass")
-        developer = Developer.objects.create(user=user_for_dev)
+        token = views.calculate_token(user_for_dev)
+        developer = Developer.objects.create(user=user_for_dev, token=token)
         game = Game.objects.create(name="test", address="asdf@asdf.com", description="my test game", price=13.99, purchaseCount=0, developer=developer, category="SPO")
 
         context = {}

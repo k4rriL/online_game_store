@@ -32,7 +32,7 @@ def games_json(request):
     end = offset + gamesPerPage
     try:
         if player is not None and search is None:
-            c = get_object_or_404(Player, user__id=int(player)).games.all()
+            c = get_object_or_404(Player, user__id=int(player)).games.all()[offset:end]
             p = []
             for i in c:
                 a = {}
@@ -205,8 +205,8 @@ def sales_numbers(request):
 #from a game model
 def get_games_info(game):
     info = {}
+    info["price"] = game.price
     info["id"] = game.id
     info["name"] = game.name
-    info["price"] = game.price
     info["category"] = game.category
     return info
