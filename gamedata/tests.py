@@ -7,8 +7,6 @@ from django.test import TransactionTestCase, Client
 from . import views
 from ui import views as views2
 import json
-from rest_framework.authtoken.models import Token
-
 
 
 class GameDataViewTests(TestCase):

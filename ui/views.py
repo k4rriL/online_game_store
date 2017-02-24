@@ -9,7 +9,6 @@ from django.db.models import F
 from django.db import DatabaseError, transaction
 import time
 from . import forms
-from rest_framework.authtoken.models import Token
 from ui.forms import RegisterForm, AddGameForm
 from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import send_mail
