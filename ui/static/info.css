@@ -16,6 +16,12 @@
   float:left;
 }
 
+.title-div .token{
+  padding-left: 15px;
+  color: white;
+  float:left;
+}
+
 .title-div p {
   margin-top:25px;
 }

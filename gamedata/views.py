@@ -100,33 +100,26 @@ def games_json(request):
     return HttpResponse(data, content_type = "application/json")
 
 
-#class for returning JSONResponse
-class JSONResponse(HttpResponse):
-
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
-
 '''
 This function is used to get all available games
 when request is made to API
-Creates new serializer from all available games
-and returns JSONResponse
 '''
 @csrf_exempt
 def game_list(request):
 
+    game_list = []
     games = Game.objects.all()
-    serializer = GameSerializer(games, many = True)
-    return JSONResponse(serializer.data)
+    for game in games:
+        game_info = get_games_info(game)
+        game_list.append(game_info)
 
-    return JSONResponse("[{}]")
+    data = json.dumps(game_list)
+    return HttpResponse(data, content_type = "application/json")
 
 
 '''
 Function for a case when specific game is
-requested. Returns wanted game as JSONResponse
+requested.
 '''
 @csrf_exempt
 def game(request, gameid):
@@ -136,15 +129,15 @@ def game(request, gameid):
     #Check that the game exists
     if games.count() > 0:
         game = Game.objects.get(id = gameid)
-        serializer = GameSerializer(game)
-        return JSONResponse(serializer.data)
+        game_info = get_games_info(game)
+        return HttpResponse([game_info], content_type = "application/json")
 
-    return JSONResponse("{}")
+    return HttpResponse("{}", content_type = "application/json")
 
 
 '''
 Function which returns highscores
-of a specific game. Returns highscores as JSONResponse
+of a specific game.
 '''
 @csrf_exempt
 def highscores(request, gameid):
@@ -159,32 +152,61 @@ def highscores(request, gameid):
         #there are any highscores
 
         if games.count() > 0:
-            serializer = HighscoreSerializer(games, many = True)
-            return JSONResponse(serializer.data)
+            games_list = []
+            for game in games:
+                info = {}
+                info["user"] = game.user.user.username
+                info["highscore"] = game.highscore
+                games_list.append(info)
+                return HttpResponse(games_list, content_type = "application/json")
 
-    return JSONResponse("[]")
+    return HttpResponse("{}", content_type = "application/json")
 
 
 '''
-This class requires authentication token to
+This function requires authentication token to
 to access its methods. Token needs to be in the
-headers of the GET request e.g.: Authorization: Token yourtokenhere
+headers of the GET request e.g.: Authorization: yourtokenhere
 '''
-class AuthView(APIView):
+def sales_numbers(request):
 
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    token = None
+    #Check that the token is given in the headers
+    try:
+        token = request.META["HTTP_AUTHORIZATION"]
+    except KeyError:
+        return HttpResponse("Remember to give the authorization token.", content_type="text/plain")
 
-    #returns highscores for authenticated developers
-    def get(self, request):
+    if Developer.objects.filter(token=token).count() == 0:
+        return HttpResponse("Invalid token.", content_type="text/plain")
 
-        developer = get_object_or_404(Developer, user = request.user)
+    else:
+        developer = Developer.objects.get(token=token)
         games = Game.objects.filter(developer = developer)
+        games_list = []
 
         #Check that there are any games
         if games.count() > 0:
-            serializer = SaleSerializer(games, many = True)
-            return JSONResponse(serializer.data)
+            for game in games:
+                info = {}
+                info["purchasecount"] = game.purchaseCount
+                info["name"] = game.name
+                games_list.append(info)
 
-        #Case developer doesn't have any games return empty
-        return JSONResponse("[]")
+            data = json.dumps(games_list)
+            return HttpResponse(data, content_type = "application/json")
+
+    #Developer doesn't have games, return empty
+    return HttpResponse("{}", content_type = "application/json")
+
+
+
+#simple function for getting data
+#from a game model
+def get_games_info(game):
+    info = {}
+    info["id"] = game.id
+    info["name"] = game.name
+    info["price"] = game.price
+    info["category"] = game.category
+    return info

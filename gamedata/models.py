@@ -57,6 +57,7 @@ class Player(models.Model):
 #Model 'extended' from user that represents a user that can add games
 class Developer(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE)
+    token = models.CharField(max_length=32, primary_key=True)
 
 #Model that represents a single game of a player (contains highscore etc. data)
 class GamesOfPlayer(models.Model):

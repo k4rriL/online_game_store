@@ -23,5 +23,5 @@ urlpatterns = [
     url(r"^v1/games/$", views.game_list, name='game_list'),
     url(r"^v1/games/(?P<gameid>\w+)$", views.game, name='gameid'),
     url(r"^v1/highscores/(?P<gameid>\w+)$", views.highscores, name='highscores'),
-    url(r'^v1/salenumbers/$', views.AuthView.as_view(), name='auth-view'),
+    url(r'^v1/salenumbers/$', views.sales_numbers, name='sales_numbers'),
 ]

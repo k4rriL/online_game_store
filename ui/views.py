@@ -491,8 +491,7 @@ def manage(request):
     sum = 0
     for i in p:
         sum = sum + i.purchaseCount
-    token = get_object_or_404(Token, user=request.user)
-    context["token"] = token
+    context["token"] = developerUser.token
     context["developer"] = developer
     context["sum"] = sum
     return render(request, "ui/index.html", context)
@@ -557,7 +556,8 @@ def register(request):
                     user.is_active = False
                     user.save()
                     if register_form.cleaned_data['usertype'] == 'developer':
-                        usertype = Developer(user=user)
+                        token = calculate_token(user)
+                        usertype = Developer(user=user, token=token)
                     else:
                         usertype = Player(user=user)
                     usertype.save()
@@ -616,7 +616,11 @@ def get_profiles(request):
     return playerUser, developerUser
 
 
-#Small function for parsing pid 
+def calculate_token(user):
+    string = user.username + "thisissalt" + user.password
+    return calculateHash(string)
+
+#Small function for parsing pid
 def get_username_from_pid(game_id, pid):
     length = len(str(game_id))
     return pid[length:len(pid)]
