@@ -34,35 +34,35 @@ class GameDataViewTests(TestCase):
 
         #Check that the response contains correct
         #information about these two games
-        response = client.get("/api/games/")
+        response = client.get("/api/games/", **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(as_json[0]["id"], game.id)
         self.assertEqual(as_json[1]["id"], game2.id)
 
         #Check setting offset parameter
-        response = client.get("/api/games/", {"offset":"1"})
+        response = client.get("/api/games/", {"offset":"1"}, **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 3)
         self.assertEqual(as_json[0]["id"], game2.id)
 
         #Check if setting category parameter works
-        response = client.get("/api/games/", {"category":"Sports"})
+        response = client.get("/api/games/", {"category":"Sports"}, **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 1)
         self.assertEqual(as_json[0]["id"], game2.id)
 
         #Check if setting query parameter works
-        response = client.get("/api/games/", {"q":"Awe"})
+        response = client.get("/api/games/", {"q":"Awe"}, **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 1)
         self.assertEqual(as_json[0]["id"], game.id)
 
         #Check with another query
-        response = client.get("/api/games/", {"q":"a"})
+        response = client.get("/api/games/", {"q":"a"}, **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 3)
@@ -71,14 +71,14 @@ class GameDataViewTests(TestCase):
         self.assertEqual(as_json[2]["id"], game4.id)
 
         #Check category and query parameters together
-        response = client.get("/api/games/", {"q":"a", "category":"Casual"})
+        response = client.get("/api/games/", {"q":"a", "category":"Casual"}, **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 1)
         self.assertEqual(as_json[0]["id"], game4.id)
 
         #Check setting developer parameter
-        response = client.get("/api/games/", {"developer":user_for_dev.id})
+        response = client.get("/api/games/", {"developer":user_for_dev.id}, **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 2)
@@ -86,14 +86,14 @@ class GameDataViewTests(TestCase):
         self.assertEqual(as_json[1]["id"], game3.id)
 
         #Check setting developer parameter and query
-        response = client.get("/api/games/", {"developer":user_for_dev.id, "q":"Adven"})
+        response = client.get("/api/games/", {"developer":user_for_dev.id, "q":"Adven"}, **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 1)
         self.assertEqual(as_json[0]["id"], game3.id)
 
         #Check setting player parameter
-        response = client.get("/api/games/", {"player":user_for_player.id})
+        response = client.get("/api/games/", {"player":user_for_player.id}, **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 3)
@@ -102,7 +102,7 @@ class GameDataViewTests(TestCase):
         self.assertEqual(as_json[2]["id"], game4.id)
 
         #Check setting player parameter and query
-        response = client.get("/api/games/", {"player":user_for_player.id, "q":"Test"})
+        response = client.get("/api/games/", {"player":user_for_player.id, "q":"Test"}, **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
         self.assertEqual(len(as_json), 1)
@@ -119,7 +119,7 @@ class GameDataViewTests(TestCase):
         client = Client()
         #Check that the response contains correct
         #information about these two games
-        response = client.get("/api/v1/games/")
+        response = client.get("/api/v1/games/", **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
 
@@ -146,7 +146,7 @@ class GameDataViewTests(TestCase):
         client = Client()
         #Check that the response contains correct
         #information about these two games
-        response = client.get("/api/v1/games/" + str(game.id))
+        response = client.get("/api/v1/games/" + str(game.id), **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
 
@@ -157,7 +157,7 @@ class GameDataViewTests(TestCase):
         self.assertEqual(as_json["price"], game.price)
         self.assertEqual(as_json["category"], game.category)
 
-        response = client.get("/api/v1/games/1" + str(game.id))
+        response = client.get("/api/v1/games/1" + str(game.id), **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
 
@@ -178,7 +178,7 @@ class GameDataViewTests(TestCase):
 
         #Create client and make GET request
         client = Client()
-        response = client.get("/api/v1/highscores/" + str(game.id))
+        response = client.get("/api/v1/highscores/" + str(game.id), **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
 
@@ -188,7 +188,7 @@ class GameDataViewTests(TestCase):
         self.assertEqual(as_json[0]["highscore"], 100)
 
         #Check that response is correct with invalid game id
-        response = client.get("/api/v1/highscores/1" + str(game.id))
+        response = client.get("/api/v1/highscores/1" + str(game.id), **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
 
@@ -212,7 +212,7 @@ class GameDataViewTests(TestCase):
 
         #Create client and make GET request
         client = Client()
-        response = client.get("/api/v1/salenumbers/")
+        response = client.get("/api/v1/salenumbers/", **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
 
@@ -221,7 +221,7 @@ class GameDataViewTests(TestCase):
         self.assertEqual(as_json["detail"], "Authentication credentials were not provided.")
 
         #Make GET request with correct headers
-        response = client.get("/api/v1/salenumbers/", HTTP_AUTHORIZATION="Token " + str(token))
+        response = client.get("/api/v1/salenumbers/", HTTP_AUTHORIZATION="Token " + str(token), **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
 
@@ -234,7 +234,7 @@ class GameDataViewTests(TestCase):
         game.save(update_fields=["purchaseCount"])
 
         #Make GET request with correct headers
-        response = client.get("/api/v1/salenumbers/", HTTP_AUTHORIZATION="Token " + str(token))
+        response = client.get("/api/v1/salenumbers/", HTTP_AUTHORIZATION="Token " + str(token), **{'wsgi.url_scheme': 'https'})
         content = response.content.decode("UTF-8")
         as_json = json.loads(content)
 
