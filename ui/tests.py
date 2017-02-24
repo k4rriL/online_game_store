@@ -28,11 +28,11 @@ class MainViewTests(TestCase):
         #Should be able to login with correct credentials
         self.assertTrue(login)
 
-        response = client.get("/game/1212")
+        response = client.get("/game/1212", **{'wsgi.url_scheme': 'https'})
         #Should return 404 with a invalid game id
         self.assertEqual(response.status_code, 404)
 
-        response = client.get("/game/"+str(game.id))
+        response = client.get("/game/"+str(game.id), **{'wsgi.url_scheme': 'https'})
         #Should return 200 with a valid game id
         self.assertEqual(response.status_code, 200)
 
@@ -53,11 +53,11 @@ class MainViewTests(TestCase):
         login = client.login(username="testplayer", password="testpass")
         self.assertTrue(login)
 
-        response = client.get("/game/1212")
+        response = client.get("/game/1212", **{'wsgi.url_scheme': 'https'})
         #Should return 404 with a invalid game id
         self.assertEqual(response.status_code, 404)
 
-        response = client.get("/game/"+str(game.id))
+        response = client.get("/game/"+str(game.id), **{'wsgi.url_scheme': 'https'})
         #Should return 200 with a valid game id
         self.assertEqual(response.status_code, 200)
 
@@ -82,7 +82,7 @@ class MainViewTests(TestCase):
         game_of_player = GamesOfPlayer.objects.create(game=game, user=player, highscore="100", gameState="assdf")
 
         #get the game_info view again now that the player has this game
-        response = client.get("/game/"+str(game.id))
+        response = client.get("/game/"+str(game.id), **{'wsgi.url_scheme': 'https'})
         self.assertEqual(response.status_code, 200)
 
         context = response.context[-1]
@@ -111,22 +111,22 @@ class MainViewTests(TestCase):
         #Should be able to login with correct credentials
         self.assertTrue(login)
 
-        response = client.get("/games/success/?id=" + gameId + "&pid=" + gameId + "testplayer", follow=True)
+        response = client.get("/games/success/?id=" + gameId + "&pid=" + gameId + "testplayer", follow=True, **{'wsgi.url_scheme': 'https'})
         #Should redirect to home with invalid parameters
         self.assertEqual(response.redirect_chain, [("/", 302)])
 
         response = client.get("/games/success/?id=" + gameId + "&pid=" + gameId
-                                                    + "testplayer&ref=1234", follow=True)
+                                                    + "testplayer&ref=1234", follow=True, **{'wsgi.url_scheme': 'https'})
         #Should redirect to home with invalid parameters
         self.assertEqual(response.redirect_chain, [("/", 302)])
 
         response = client.get("/games/success/?id=" + gameId + "&pid=" + gameId
-                                                    + "testplayer&ref=1234&result=success", follow=True)        #Should redirect to home with invalid parameters
+                                                    + "testplayer&ref=1234&result=success", follow=True, **{'wsgi.url_scheme': 'https'})        #Should redirect to home with invalid parameters
         self.assertEqual(response.redirect_chain, [("/", 302)])
 
         response = client.get("/games/success/?id=" + gameId + "&pid=" + gameId
                                                     + "testplayer&ref=1234&result=success"
-                                                    + "&checksum=" + checksum, follow=True)        #Should redirect to home with invalid parameters
+                                                    + "&checksum=" + checksum, follow=True, **{'wsgi.url_scheme': 'https'})        #Should redirect to home with invalid parameters
         #Should redirect to the game with valid parameters
         self.assertEqual(response.redirect_chain, [("/game/" + gameId, 302)])
 
@@ -152,38 +152,38 @@ class MainViewTests(TestCase):
         #Should be able to login with correct credentials
         self.assertTrue(login)
 
-        response = client.post("/addnewgame/", {"name": "test"})
+        response = client.post("/addnewgame/", {"name": "test"}, **{'wsgi.url_scheme': 'https'})
         #Should redirect to manage and not add the game with these invalid parameters
         self.assertEqual(response.url, "/manage")
         self.assertTrue(Game.objects.filter(name="test").count() == 0)
 
-        response = client.post("/addnewgame/", {"name": "test", "url": "http://yle.fi"})
-        #Should redirect to manage and not add the game with these invalid parameters
-        self.assertEqual(response.url, "/manage")
-        self.assertTrue(Game.objects.filter(name="test").count() == 0)
-
-        response = client.post("/addnewgame/", {"name": "test", "url": "http://yle.fi",
-                                                "description": "testing"})
+        response = client.post("/addnewgame/", {"name": "test", "url": "http://yle.fi"}, **{'wsgi.url_scheme': 'https'})
         #Should redirect to manage and not add the game with these invalid parameters
         self.assertEqual(response.url, "/manage")
         self.assertTrue(Game.objects.filter(name="test").count() == 0)
 
         response = client.post("/addnewgame/", {"name": "test", "url": "http://yle.fi",
-                                                "description": "testing", "price": 1.99 })
+                                                "description": "testing"}, **{'wsgi.url_scheme': 'https'})
+        #Should redirect to manage and not add the game with these invalid parameters
+        self.assertEqual(response.url, "/manage")
+        self.assertTrue(Game.objects.filter(name="test").count() == 0)
+
+        response = client.post("/addnewgame/", {"name": "test", "url": "http://yle.fi",
+                                                "description": "testing", "price": 1.99 }, **{'wsgi.url_scheme': 'https'})
         #Should redirect to manage and not add the game with these invalid parameters
         self.assertEqual(response.url, "/manage")
         self.assertTrue(Game.objects.filter(name="test").count() == 0)
 
         response = client.post("/addnewgame/", {"name": "test", "url": "https://yle.fi",
                                                "description": "testing", "price": 1.99,
-                                               "category": "Action" })
+                                               "category": "Action" }, **{'wsgi.url_scheme': 'https'})
         #Should return to manage and add the game with correct parameters
         self.assertEqual(response.url, "/manage")
         self.assertTrue(Game.objects.filter(name="test").count() == 1)
 
         response = client.post("/addnewgame/", {"name": "test game", "url": "http://yle.fi",
                                                "description": "testing", "price": 1.99,
-                                               "category": "Action" })
+                                               "category": "Action" }, **{'wsgi.url_scheme': 'https'})
         #Should return to addnewgame and not add the new game because it has the same name
         #as the old game
         self.assertEqual(response.context[-1]["url_error"], "You have to use HTTPS")
@@ -204,12 +204,12 @@ class MainViewTests(TestCase):
         #Should be able to login with correct credentials
         self.assertTrue(login)
 
-        response = client.post("/deletegame/")
+        response = client.post("/deletegame/", **{'wsgi.url_scheme': 'https'})
         #Should only return redirect to manage and not crash without
         #the parameter gameid
         self.assertEqual(response.url, "/manage")
 
-        response = client.post("/deletegame/", {"gameid": game.id})
+        response = client.post("/deletegame/", {"gameid": game.id}, **{'wsgi.url_scheme': 'https'})
         #Should redirect to manage and remove the wanted game
         self.assertEqual(response.url, "/manage")
         self.assertTrue(Game.objects.filter(id=game.id).count() == 0)
@@ -242,7 +242,7 @@ class MainViewTests(TestCase):
         #Should be able to login with correct credentials
         self.assertTrue(login)
 
-        response = client.get("/modify/" + str(game.id), follow=True)
+        response = client.get("/modify/" + str(game.id), follow=True, **{'wsgi.url_scheme': 'https'})
         #Should only return redirect to main page
         #when trying to modify game with player
         self.assertEqual(response.redirect_chain, [("/", 302)])
@@ -252,12 +252,12 @@ class MainViewTests(TestCase):
         #Should be able to login with correct credentials
         self.assertTrue(login)
 
-        response = client.get("/modify/1" + str(game.id), follow=True)
+        response = client.get("/modify/1" + str(game.id), follow=True, **{'wsgi.url_scheme': 'https'})
         #Should redirect to manage when trying to modify game with
         #invalid id
         self.assertEqual(response.redirect_chain, [("/manage/", 302)])
 
-        response = client.get("/modify/" + str(game.id), follow=True)
+        response = client.get("/modify/" + str(game.id), follow=True, **{'wsgi.url_scheme': 'https'})
         #Should return the manage view with developer who
         #doesn't own this specific game but is trying to modify it
         self.assertEqual(response.redirect_chain, [("/manage/", 302)])
@@ -267,7 +267,7 @@ class MainViewTests(TestCase):
         #Should be able to login with correct credentials
         self.assertTrue(login)
 
-        response = client.get("/modify/" + str(game.id), follow=True)
+        response = client.get("/modify/" + str(game.id), follow=True, **{'wsgi.url_scheme': 'https'})
         #Should return the modify view for this specific game
         #when the logged in developer is correct and set the
         #context correctly
@@ -294,21 +294,21 @@ class MainViewTests(TestCase):
         #Should be able to login with correct credentials
         self.assertTrue(login)
 
-        response = client.post("/modifygame/", {"name": "new name"})
+        response = client.post("/modifygame/", {"name": "new name"}, **{'wsgi.url_scheme': 'https'})
         #Should redirect to manage and not modify the game with these invalid parameters
         self.assertEqual(response.url, "/manage/")
         self.assertTrue(Game.objects.filter(name="test").count() == 1)
 
 
         response = client.post("/modifygame/", {"name": "new name", "url": "http://yle.fi",
-                                                "description": "testing", "price": 1.99})
+                                                "description": "testing", "price": 1.99}, **{'wsgi.url_scheme': 'https'})
         #Should redirect to manage and not modify the game with these invalid parameters
         self.assertEqual(response.url, "/manage/")
         self.assertTrue(Game.objects.filter(name="test").count() == 1)
 
         response = client.post("/modifygame/", {"name": "test3", "url": "https://yle.fi",
                                                "description": "testing", "price": 1.99,
-                                               "category": "Action", "gameid": str(game.id)})
+                                               "category": "Action", "gameid": str(game.id)}, **{'wsgi.url_scheme': 'https'})
         #Should return to manage and modify the game with correct parameters
         self.assertEqual(response.url, "/manage/")
         self.assertEqual(Game.objects.filter(name="test").count(), 0)
@@ -316,7 +316,7 @@ class MainViewTests(TestCase):
 
         response = client.post("/modifygame/", {"name": "test2", "url": "http://yle.fi",
                                                "description": "testing", "price": 1.99,
-                                               "category": "Action", "gameid": str(game.id)})
+                                               "category": "Action", "gameid": str(game.id)}, **{'wsgi.url_scheme': 'https'})
         #Should return to modifygame and not modify the name of
         #the game because it has the same name as this developer's
         #other game

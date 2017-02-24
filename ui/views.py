@@ -25,14 +25,7 @@ def front(request):
     developerUser = None
     playerUser = None
     if request.user.is_authenticated():
-        try:
-            playerUser = Player.objects.get(user=request.user)
-        except Player.DoesNotExist:
-            print("player does not exist")
-        try:
-            developerUser = Developer.objects.get(user=request.user)
-        except Developer.DoesNotExist:
-            print("Developer does not exist")
+        playerUser, developerUser = get_profiles(request)
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
     return render(request, "ui/index.html", context)
@@ -43,14 +36,7 @@ def category(request, category):
     developerUser = None
     playerUser = None
     if request.user.is_authenticated():
-        try:
-            playerUser = Player.objects.get(user=request.user)
-        except Player.DoesNotExist:
-            print("player does not exist")
-        try:
-            developerUser = Developer.objects.get(user=request.user)
-        except Developer.DoesNotExist:
-            print("developer does not exist")
+        playerUser, developerUser = get_profiles(request)
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
     return render(request, "ui/index.html", context)
@@ -70,21 +56,12 @@ def game_info(request, gameId):
     #Check that the user is authenticated
     if request.user.is_authenticated():
 
-        try:
-            playerUser = Player.objects.get(user=request.user)
-        except Player.DoesNotExist:
-            print("player does not exist")
-
-        try:
-            developerUser = Developer.objects.get(user=request.user)
-        except Developer.DoesNotExist:
-            print("developer does not exist")
+        playerUser, developerUser = get_profiles(request)
 
         if playerUser is not None:
 
-            player = playerUser
-            context["player"] = player
-            playersGames = GamesOfPlayer.objects.filter(user=player)
+            context["player"] = playerUser
+            playersGames = GamesOfPlayer.objects.filter(user=playerUser)
 
             for i in playersGames:
                 if i.game.id == game.id:
@@ -251,20 +228,11 @@ Game and checks that there is no game with the same name
 @login_required
 def add_new_game(request):
     context = {}
-    developerUser = None
-    playerUser = None
-    if request.user.is_authenticated():
-        try:
-            playerUser = Player.objects.get(user=request.user)
-        except Player.DoesNotExist:
-            print("player does not exist")
-        try:
-            developerUser = Developer.objects.get(user=request.user)
-        except Developer.DoesNotExist:
-            print("developer does not exist")
+    playerUser, developerUser = get_profiles(request)
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
-    developer = Developer.objects.get(user=request.user)
+    if playerUser is not None:
+        return HttpResponseRedirect("/")
 
     #Check if method is post
     if request.method == "POST":
@@ -282,7 +250,7 @@ def add_new_game(request):
 
             #Check that there are no games with same name and that https is used
             if Game.objects.filter(name=name).count() == 0 and url_is_https(url):
-                new_game = Game.objects.create(name=name, address=url, description=description, price=price, purchaseCount=0, developer=developer, category=category)
+                new_game = Game.objects.create(name=name, address=url, description=description, price=price, purchaseCount=0, developer=developerUser, category=category)
                 new_game.save()
 
             #some problems with input, check if https
@@ -322,22 +290,7 @@ the highscores of a game
 @login_required
 def modify(request, gameId):
     context = {}
-    playerUser = None
-    developerUser = None
-
-    #Requires an authenticated user
-    if request.user.is_authenticated():
-
-        try:
-            playerUser = Player.objects.get(user=request.user)
-        except Player.DoesNotExist:
-            print("player does not exist")
-
-        try:
-            developerUser = Developer.objects.get(user=request.user)
-        except Developer.DoesNotExist:
-            print("developer does not exist")
-
+    playerUser, developerUser = get_profiles(request)
     context["playerUser"] = playerUser
     context["developerUser"] = developerUser
 
@@ -616,9 +569,12 @@ def get_profiles(request):
     return playerUser, developerUser
 
 
+#simple function for calculating token
+#for developer
 def calculate_token(user):
     string = user.username + "thisissalt" + user.password
     return calculateHash(string)
+
 
 #Small function for parsing pid
 def get_username_from_pid(game_id, pid):
