@@ -209,7 +209,8 @@ There were no problems implementing this feature and we were hoping to get the m
 #### Mobile Friendly:
 The website was made mobile and tablet friendly by cleverly using the CSS-library Bootstrap and its features. 
 The page will scale itself according to the size of the window use. Mobile friendliness has also been kept in mind 
-when positioning items and in general design.
+when positioning items and in general design. A challenging thing was to make all the elements not overlap or overflow from their
+containers when resizing windows.
 
 #### Game/service interaction
 The complete set of game-service interaction features was implemented for the site. This includes saving and loading the game state data,
@@ -224,7 +225,8 @@ Login using Facebook account was enabled by using Python Social Auth modules soc
 
 #### Authentication
 In addition to Facebook login, the user can also register a account directly to the site. The use of Django Auth features
-should guarantee the robustness of the system.
+should guarantee the robustness of the system. Since we have implemented the email verification and the other features well, 
+we would like to get the maximum points.
 
 #### Quality of work:
 
