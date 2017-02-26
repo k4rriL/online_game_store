@@ -245,6 +245,23 @@ Player functionalities can be tested by using your Facebook-account or by creati
 You can choose whether you want to create a player or a developer. Facebook accounts will automatically be of player-type. 
 A confirmation email is sent to the email you specified if you created your account without Facebook. 
 As the course documentation suggested, this was implemented with Django's Console Backend, so no actual emails are sent.
+This means, that in order to register a user, you would have to have access to heroku logs. You can email (karri.lehtiranta@aalto.fi)
+for the access or just push this repo to another heroku app. This should work, you just have to run: 
+
+heroku run bash
+python manage.py migrate
+
+After running these commands, the app should work. Locally you will have to run python manage.py collectstatic in order to get the static files
+since Debug is turned off.
+
+Test users:     
+Developer:
+developer
+testisalasana
+
+Player:
+player
+testisalasana
 
 
 
