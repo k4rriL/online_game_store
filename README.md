@@ -186,7 +186,8 @@ Player can browse through games by using search querys and categories. While sea
 New games can also be loaded dynamically by scrolling the page (if the store contains that many games). A player can view his own games in 'My Games' view. 
 Player is capable of buying a new game using the payment system provided by the course’s mockup payment service. This feature should be secure since 
 the payment service uses checksums to validate the posted data and on our server checksum is also validated. The most difficult part was to make sure 
-this functionality is secure and that it can’t be misused.
+this functionality is secure and that it can’t be misused. Its only weakness is that the payment is based on sessions, so in case the user somehow logs out
+during the payment, he might end up losing money.
 
 #### Basic developer functionalities: 
 
@@ -200,10 +201,10 @@ As we have implemented every required feature from we would give ourselves the m
 #### RESTful API:
 
 As an extra feature, we have also implemented an REST api to offer highscores, information about available games and 
-sales statistics and it is implemented using Django REST Framework. Access to these sales statistics requires Developer 
-account and this api uses Tokens to authenticate the GET request. Tokens are only distributed to Developers and the token has 
-to be included in the headers of the GET request so no normal user can access information about developer’s sales statistics. 
-There were no problems implementing this feature and we were hoping to get the maximum points from this feature.  
+sales statistics. Access to these sales statistics requires Developer account and this api uses tokens to authenticate the GET request. 
+Tokens are only distributed to Developers and the token has to be included in the headers of the GET request so no normal user
+can access information about developer’s sales statistics. There were no problems implementing this feature and we were hoping
+to get the maximum points from this feature.  
 
 
 #### Mobile Friendly:
