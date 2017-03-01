@@ -34,6 +34,7 @@
 
 $( document ).ready(function() {
 	gameFrame = document.getElementById("gameFrame");
+	gameFrameDiv = document.getElementById("gameFrameDiv");
 	window.addEventListener("message", receiveGameMsg, false);
 });
 
@@ -137,11 +138,24 @@ function receiveGameMsg (event)
 		console.log("Settings received");
 		if (msg.options) {
 			if (msg.options.width) {
-				gameFrame.width = msg.options.width;
+				var divStyle = window.getComputedStyle(gameFrameDiv, null);
+				var iframeStyle = window.getComputedStyle(gameFrame, null);
+				// assuming left and right values are equal
+				// also assume that style string always starts with [value]px
+				gameFrameDiv.style.width = msg.options.width +
+					2 * parseInt(divStyle.getPropertyValue("border")) +
+					2 * parseInt(divStyle.getPropertyValue("padding")) +
+					2 * parseInt(iframeStyle.getPropertyValue("margin")) +
+					"px";
+				// same effect as:
+				// gameFrame.style.width = msg.options.width + "px";
+				// but actually works
 				console.log("Setting game width to " + msg.options.width);
 			}
 			if (msg.options.height) {
-				gameFrame.height = msg.options.height;
+				// this may not actually do anything because of
+				// gameFrame.style.minHeight
+				gameFrame.style.height = msg.options.height + "px";
 				console.log("Setting game height to " + msg.options.height);
 			}
 		}
@@ -165,7 +179,7 @@ function receiveGameMsg (event)
     </div>
     {% if owned %}
       <div class="row">
-        <div class="col-md-8 col-sm-12 col-xs-16 game-iframe">
+        <div id="gameFrameDiv" class="col-md-8 col-sm-12 col-xs-16 game-iframe">
           <iframe id="gameFrame" src="{{game.address}}"></iframe>
         </div>
         <div class="col-md-3 col-sm-6 col-xs-8">
